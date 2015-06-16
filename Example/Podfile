@@ -1,0 +1,13 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+target 'Operative_Example', :exclusive => true do
+  pod "Operative", :path => "../"
+end
+
+target 'Operative_Tests', :exclusive => true do
+  pod "Operative", :path => "../"
+
+  pod 'Specta'
+  pod 'Expecta'
+end
