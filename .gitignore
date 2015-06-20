@@ -19,6 +19,9 @@ DerivedData
 *.hmap
 *.ipa
 
+# vim
+*.swp
+
 # Bundler
 .bundle
 

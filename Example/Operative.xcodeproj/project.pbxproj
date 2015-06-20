@@ -22,6 +22,7 @@
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		9EE08E45A9C5F244EE653806 /* Pods_Operative_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AE9A76FC6806A24C8741338 /* Pods_Operative_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		E220B57D1B35730800D706E1 /* GroupOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E220B57C1B35730800D706E1 /* GroupOperationTest.m */; };
 		EF79C3C0771C5B5E9CE3B749 /* Pods_Operative_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -39,7 +40,7 @@
 		0A8F82578DDF2C89BEDA7C41 /* Operative.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Operative.podspec; path = ../Operative.podspec; sourceTree = "<group>"; };
 		2DE792D5C4560BBB37DB3592 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		3050B054C14E8A45839ECF46 /* Pods-Operative_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Tests/Pods-Operative_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		6003F58A195388D20070C39A /* Operative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Operative.app; path = Operative_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6003F58A195388D20070C39A /* Operative_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Operative_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		6003F591195388D20070C39A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -52,7 +53,7 @@
 		6003F5A5195388D20070C39A /* OPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OPViewController.h; sourceTree = "<group>"; };
 		6003F5A6195388D20070C39A /* OPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OPViewController.m; sourceTree = "<group>"; };
 		6003F5A8195388D20070C39A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		6003F5AE195388D20070C39A /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = Tests.xctest; path = Operative_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6003F5AE195388D20070C39A /* Operative_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Operative_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F5AF195388D20070C39A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -63,6 +64,8 @@
 		9AE9A76FC6806A24C8741338 /* Pods_Operative_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Operative_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F2E06E562398CD873308840 /* Pods-Operative_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Tests/Pods-Operative_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Operative_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E220B57B1B35730800D706E1 /* GroupOperationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupOperationTest.h; sourceTree = "<group>"; };
+		E220B57C1B35730800D706E1 /* GroupOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupOperationTest.m; sourceTree = "<group>"; };
 		E232E014FBDD619DA5A3494C /* Pods-Operative_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Example/Pods-Operative_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		FE42C8B54A9AD40C8F14C2CD /* Pods-Operative_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Example/Pods-Operative_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,8 +111,8 @@
 		6003F58B195388D20070C39A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6003F58A195388D20070C39A /* Operative.app */,
-				6003F5AE195388D20070C39A /* Tests.xctest */,
+				6003F58A195388D20070C39A /* Operative_Example.app */,
+				6003F5AE195388D20070C39A /* Operative_Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -137,6 +140,8 @@
 				6003F5A6195388D20070C39A /* OPViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
+				E220B57B1B35730800D706E1 /* GroupOperationTest.h */,
+				E220B57C1B35730800D706E1 /* GroupOperationTest.m */,
 			);
 			name = "Example for Operative";
 			path = Operative;
@@ -213,7 +218,7 @@
 			);
 			name = Operative_Example;
 			productName = Operative;
-			productReference = 6003F58A195388D20070C39A /* Operative.app */;
+			productReference = 6003F58A195388D20070C39A /* Operative_Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6003F5AD195388D20070C39A /* Operative_Tests */ = {
@@ -234,7 +239,7 @@
 			);
 			name = Operative_Tests;
 			productName = OperativeTests;
-			productReference = 6003F5AE195388D20070C39A /* Tests.xctest */;
+			productReference = 6003F5AE195388D20070C39A /* Operative_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -391,6 +396,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* OPAppDelegate.m in Sources */,
+				E220B57D1B35730800D706E1 /* GroupOperationTest.m in Sources */,
 				6003F5A7195388D20070C39A /* OPViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
@@ -515,6 +521,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Operative/Operative-Prefix.pch";
 				INFOPLIST_FILE = "Operative/Operative-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -530,6 +537,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Operative/Operative-Prefix.pch";
 				INFOPLIST_FILE = "Operative/Operative-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

@@ -1,0 +1,1 @@
+../../../../../Pod/Classes/Categories/UIUserNotificationSettings+Operator.h

@@ -1,0 +1,6 @@
+framework module Operative {
+  umbrella header "Pods-Operative_Tests-Operative-umbrella.h"
+
+  export *
+  module * { export * }
+}

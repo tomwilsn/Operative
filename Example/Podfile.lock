@@ -1,0 +1,20 @@
+PODS:
+  - Expecta (0.3.2)
+  - Operative (0.1.0)
+  - Specta (0.4.0)
+
+DEPENDENCIES:
+  - Expecta
+  - Operative (from `../`)
+  - Specta
+
+EXTERNAL SOURCES:
+  Operative:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Expecta: ee641011fe10aa1855d487b40e4976dac50ec342
+  Operative: 759c2d96643d1a447488d0a554a6b55c0d6d4a6b
+  Specta: 1df326d6ec48603c77f507a0ab1f89ad2df1c582
+
+COCOAPODS: 0.37.2
