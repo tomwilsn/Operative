@@ -9,7 +9,7 @@
     "Tom Wilson": "tom@toms-stuff.net"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/Operative.git",
+    "git": "https://github.com/Kabal/Operative.git",
     "tag": "0.1.0"
   },
   "platforms": {

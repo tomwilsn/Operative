@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "92D669A392DBB07EFDFC0F66"
+               BlueprintIdentifier = "BEA7F74735E15D5CCC953199"
                BuildableName = "Operative.bundle"
                BlueprintName = "Pods-Operative_Example-Operative-Operative"
                ReferencedContainer = "container:Pods.xcodeproj">
