@@ -10,7 +10,7 @@
 Pod::Spec.new do |s|
   s.name             = "Operative"
   s.version          = "0.1.0"
-  s.summary          = "Objective-C Port of the sample code in the Apple WWDC presentation \"Advanced NSOperations\""
+  s.summary          = "Advanced NSOperations. Objective-C Port of the sample code in the Apple WWDC 2015 presentation \"Advanced NSOperations\""
   s.description      = <<-DESC
 
                         Provides a NSOperation sublass with a more advanced state machine.
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Tom Wilson" => "tom@toms-stuff.net" }
   s.source           = { :git => "https://github.com/Kabal/Operative.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.social_media_url = 'https://twitter.com/tomwilson'
 
   s.platform     = :ios, '8.0'
   s.requires_arc = true
