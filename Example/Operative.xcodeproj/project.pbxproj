@@ -23,6 +23,7 @@
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		9EE08E45A9C5F244EE653806 /* Pods_Operative_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AE9A76FC6806A24C8741338 /* Pods_Operative_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		E220B57D1B35730800D706E1 /* GroupOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E220B57C1B35730800D706E1 /* GroupOperationTest.m */; };
+		E220B5901B36BE9100D706E1 /* CategoriesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E220B58E1B36BE8E00D706E1 /* CategoriesTests.m */; };
 		EF79C3C0771C5B5E9CE3B749 /* Pods_Operative_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -66,6 +67,7 @@
 		E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Operative_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E220B57B1B35730800D706E1 /* GroupOperationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupOperationTest.h; sourceTree = "<group>"; };
 		E220B57C1B35730800D706E1 /* GroupOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupOperationTest.m; sourceTree = "<group>"; };
+		E220B58E1B36BE8E00D706E1 /* CategoriesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesTests.m; sourceTree = "<group>"; };
 		E232E014FBDD619DA5A3494C /* Pods-Operative_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Example/Pods-Operative_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		FE42C8B54A9AD40C8F14C2CD /* Pods-Operative_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Example/Pods-Operative_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				6003F5BB195388D20070C39A /* Tests.m */,
+				E220B58E1B36BE8E00D706E1 /* CategoriesTests.m */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
 			);
 			path = Tests;
@@ -407,6 +410,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5BC195388D20070C39A /* Tests.m in Sources */,
+				E220B5901B36BE9100D706E1 /* CategoriesTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

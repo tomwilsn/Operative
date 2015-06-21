@@ -28,11 +28,14 @@
 
 - (BOOL) containsSettings:(UIUserNotificationSettings *) settings;
 {
-    if ((self.types & UIUserNotificationTypeBadge) && !(settings.types & UIUserNotificationTypeBadge))
+    if (((self.types & UIUserNotificationTypeBadge) == 0) &&
+        ((settings.types & UIUserNotificationTypeBadge) != 0))
         return NO;
-    else if ((self.types & UIUserNotificationTypeSound) && !(settings.types & UIUserNotificationTypeSound))
+    else if (((self.types & UIUserNotificationTypeSound) == 0) &&
+        ((settings.types & UIUserNotificationTypeSound) != 0))
         return NO;
-    else if ((self.types & UIUserNotificationTypeAlert) && !(settings.types & UIUserNotificationTypeAlert))
+    else if (((self.types & UIUserNotificationTypeAlert) == 0) &&
+             ((settings.types & UIUserNotificationTypeAlert) != 0))
         return NO;
     
     NSSet *otherCategories = settings.categories ? settings.categories : [NSSet set];
