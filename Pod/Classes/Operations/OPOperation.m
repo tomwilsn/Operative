@@ -297,6 +297,11 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     // No op.
 }
 
+- (void) finished:(NSArray *) errors
+{
+    // No op.
+}
+
 - (void) waitUntilFinished
 {
     NSAssert(NO, @"I'm pretty sure you don't want to do this.");

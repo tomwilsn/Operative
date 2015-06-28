@@ -44,5 +44,10 @@
 - (void) finishWithErrors:(NSArray *) errors;
 
 - (void) finishedWithErrors:(NSArray *) errors;
+- (void) finished:(NSArray *) errors;
+
+
+- (void) produceOperation:(NSOperation *) operation;
+
 
 @end
