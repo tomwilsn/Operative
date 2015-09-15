@@ -10,11 +10,11 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   Operative:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  Expecta: ee641011fe10aa1855d487b40e4976dac50ec342
-  Operative: ed76e2e05922b204c0f53e0b1fa1e6dcae1c803e
-  Specta: 1df326d6ec48603c77f507a0ab1f89ad2df1c582
+  Expecta: 8c507baf13211207b1e9d0a741480600e6b4ed15
+  Operative: 7efa595e92acb77fefbfb739d5d5ee43985d2c59
+  Specta: a353759f073ffcc0a365b782fe4aaeac064c03c6
 
-COCOAPODS: 0.37.2
+COCOAPODS: 0.38.2
