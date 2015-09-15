@@ -28,7 +28,7 @@
 #import "UIUserNotificationSettings+Operator.h"
 #import "NSError+OPOperationErrors.h"
 
-#import "OPOperationConditionMututallyExclusive.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 
 NSString * const kCurrentSetings = @"CurrentUserNotificationSettings";
 NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
@@ -65,7 +65,7 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
         _application = appliction;
         _behavior = behavior;
         
-        [self addCondition:[OPOperationConditionMututallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
+        [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
     }
     return self;
 }

@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "OPOPeration.h"
+#import "OPOperation.h"
 
 typedef NS_ENUM(NSUInteger, OPOperationConditionResultStatus) {
     OPOperationConditionResultStatusSatisfied,

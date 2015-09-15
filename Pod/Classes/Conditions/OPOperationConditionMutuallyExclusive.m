@@ -1,4 +1,4 @@
-// OPOperationConditionMututallyExclusive.h
+// OPOperationConditionMutuallyExclusive.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,13 +19,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "OPOperationConditionMutuallyExclusive.h"
 #import "OPOperationCondition.h"
 
-@interface OPOperationConditionMututallyExclusive : NSObject <OPOperationCondition>
+@interface OPOperationConditionMutuallyExclusive ()
+@property (copy, nonatomic) Class cls;
+@end
 
-- (instancetype) initWithClass:(Class) cls;
+@implementation OPOperationConditionMutuallyExclusive
 
 + (instancetype) mutuallyExclusiveWith:(Class) cls;
+{
+    return [[self alloc] initWithClass:cls];
+}
+
+- (instancetype) initWithClass:(Class) cls
+{
+    self = [super init];
+    if (self)
+    {
+        _cls = cls;
+    }
+    return self;
+}
+
+- (NSString *) name
+{
+    return [NSString stringWithFormat:@"MutuallyExclusive<%@>", NSStringFromClass(self.cls)];
+}
+
+- (BOOL) isMutuallyExclusive
+{
+    return YES;
+}
+
+- (NSOperation *) dependencyForOperation:(OPOperation *)operation
+{
+    return nil;
+}
+
+- (void) evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(NSError *))completion
+{
+    completion(OPOperationConditionResultStatusSatisfied);
+}
 
 @end

@@ -22,7 +22,7 @@
 #if TARGET_OS_IPHONE
 
 #import "OPAlertOperation.h"
-#import "OPOperationConditionMututallyExclusive.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 
 
 @interface OPAlertOperation()
@@ -66,9 +66,9 @@
         _alertController = [[UIAlertController alloc] init];
         
         
-        [self addCondition:[OPOperationConditionMututallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
+        [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
 
-        [self addCondition:[OPOperationConditionMututallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
+        [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
     }
     return self;
 }

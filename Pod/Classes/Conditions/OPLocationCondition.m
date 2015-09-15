@@ -21,7 +21,7 @@
 
 
 #import "OPLocationCondition.h"
-#import "OPOperationConditionMututallyExclusive.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 #import "NSError+OPOperationErrors.h"
 
 #import <CoreLocation/CoreLocation.h>
@@ -46,7 +46,7 @@ NSString * const kOPAuthorizationStatusKey = @"CLAuthorizationStatus";
     {
         _usage = usage;
         
-        [self addCondition:[[OPOperationConditionMututallyExclusive alloc] initWithClass:[UIAlertController class]]];
+        [self addCondition:[[OPOperationConditionMutuallyExclusive alloc] initWithClass:[UIAlertController class]]];
     }
     return self;
 }

@@ -22,7 +22,7 @@
 
 #import "OPLocationOperation.h"
 
-#import "OPOperationConditionMututallyExclusive.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 #import "OPLocationCondition.h"
 
 @interface OPLocationOperation() <CLLocationManagerDelegate>
@@ -45,7 +45,7 @@
         
         
         [self addCondition:[[OPLocationCondition alloc] initWithUsage:OPLocationConditionWhenInUse]];
-        [self addCondition:[[OPOperationConditionMututallyExclusive alloc] initWithClass:[CLLocationManager class]]];
+        [self addCondition:[[OPOperationConditionMutuallyExclusive alloc] initWithClass:[CLLocationManager class]]];
         
     }
     return self;
