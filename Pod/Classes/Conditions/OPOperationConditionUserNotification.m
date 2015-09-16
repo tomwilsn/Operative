@@ -30,7 +30,7 @@
 
 #import "OPOperationConditionMutuallyExclusive.h"
 
-NSString * const kCurrentSetings = @"CurrentUserNotificationSettings";
+NSString * const kCurrentSettings = @"CurrentUserNotificationSettings";
 NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
 
 
@@ -124,7 +124,7 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
     return @"UserNotification";
 }
 
-- (BOOL) isMutuallyExclusive
+- (BOOL)isMutuallyExclusive
 {
     return NO;
 }
@@ -136,28 +136,28 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
                                                                   behavior:self.behavior];
 }
 
-- (void) evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(NSError *))completion
+- (void) evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
 {
-    id result;
-    
+    // Satisfied until not
+    OPOperationConditionResultStatus result = OPOperationConditionResultStatusSatisfied;
+
+    NSError *error = nil;
+
     UIUserNotificationSettings *current = self.application.currentUserNotificationSettings;
     
-    if ([current containsSettings:self.settings])
-    {
-        result = [NSNull null];
-    }
-    else
-    {
-        NSError *error = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:@{
-                                                                                               kOPOperationConditionKey: NSStringFromClass(self.class),
-                                                                                               kCurrentSetings: current ? current : [NSNull class],
-                                                                                               kDesiredSettings: self.settings
-                                                                                               }];
-        
-        result = error;
+    if ([current containsSettings:self.settings]) {
+        // No-op
+    } else {
+        NSDictionary *userInfo = @{
+                kOPOperationConditionKey : NSStringFromClass(self.class),
+                kCurrentSettings : current ?: [NSNull null],
+                kDesiredSettings : self.settings
+        };
+        error = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:userInfo];
+        result = OPOperationConditionResultStatusFailed;
     }
     
-    completion(result);
+    completion(result, error);
 }
 
 @end

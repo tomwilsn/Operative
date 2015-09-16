@@ -28,39 +28,38 @@
 
 @implementation OPOperationConditionMutuallyExclusive
 
-+ (instancetype) mutuallyExclusiveWith:(Class) cls;
++ (instancetype)mutuallyExclusiveWith:(Class)cls;
 {
     return [[self alloc] initWithClass:cls];
 }
 
-- (instancetype) initWithClass:(Class) cls
+- (instancetype)initWithClass:(Class)cls
 {
     self = [super init];
-    if (self)
-    {
+    if (self) {
         _cls = cls;
     }
     return self;
 }
 
-- (NSString *) name
+- (NSString *)name
 {
     return [NSString stringWithFormat:@"MutuallyExclusive<%@>", NSStringFromClass(self.cls)];
 }
 
-- (BOOL) isMutuallyExclusive
+- (BOOL)isMutuallyExclusive
 {
     return YES;
 }
 
-- (NSOperation *) dependencyForOperation:(OPOperation *)operation
+- (NSOperation *)dependencyForOperation:(OPOperation *)operation
 {
     return nil;
 }
 
-- (void) evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(NSError *))completion
+- (void)evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
 {
-    completion(OPOperationConditionResultStatusSatisfied);
+    completion(OPOperationConditionResultStatusSatisfied, nil);
 }
 
 @end

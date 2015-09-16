@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import "OPOperation.h"
 
+
 typedef NS_ENUM(NSUInteger, OPOperationConditionResultStatus) {
     OPOperationConditionResultStatusSatisfied,
     OPOperationConditionResultStatusFailed,
@@ -32,8 +33,10 @@ typedef NS_ENUM(NSUInteger, OPOperationConditionResultStatus) {
 @property (readonly, nonatomic) NSString *name;
 @property (readonly, nonatomic) BOOL isMutuallyExclusive;
 
-- (NSOperation *) dependencyForOperation:(OPOperation *) operation;
-- (void) evaluateConditionForOperation:(OPOperation *) operation completion:(void (^)(NSError *result))completion;
+- (NSOperation *)dependencyForOperation:(OPOperation *)operation;
+
+- (void)evaluateConditionForOperation:(OPOperation *)operation
+                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion;
 
 @end
 

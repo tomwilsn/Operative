@@ -147,7 +147,7 @@ NSString * const kOPAuthorizationStatusKey = @"CLAuthorizationStatus";
     return @"Location";
 }
 
-- (BOOL) isMutuallyExclusive
+- (BOOL)isMutuallyExclusive
 {
     return NO;
 }
@@ -157,32 +157,34 @@ NSString * const kOPAuthorizationStatusKey = @"CLAuthorizationStatus";
     return [[OPLocationPermissionOperation alloc] initWithUsage:self.usage];
 }
 
-- (void) evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(NSError *))completion
+- (void)evaluateConditionForOperation:(OPOperation *)operation
+                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
 {
     BOOL enabled = [CLLocationManager locationServicesEnabled];
     CLAuthorizationStatus actual = [CLLocationManager authorizationStatus];
-    
+
+    // Satisfied until not
+    OPOperationConditionResultStatus resultStatus = OPOperationConditionResultStatusSatisfied;
+
     NSError *error = nil;
-    
-    if (enabled && actual == kCLAuthorizationStatusAuthorizedAlways)
-    {
+
+    if (enabled && actual == kCLAuthorizationStatusAuthorizedAlways) {
         // nothing..
     }
-    else if (enabled && (self.usage == OPLocationConditionWhenInUse) && (actual == kCLAuthorizationStatusAuthorizedWhenInUse))
-    {
+    else if (enabled && (self.usage == OPLocationConditionWhenInUse) && (actual == kCLAuthorizationStatusAuthorizedWhenInUse)) {
         // nothing..
     }
-    else
-    {
-        error = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:@{
-                                                                                      kOPOperationConditionKey: NSStringFromClass(self.class),
-                                                                                      kOPLocationServicesEnabledKey: @(enabled),
-                                                                                      kOPAuthorizationStatusKey: @(actual)
-                                                                                      
-                                                                                      }];
+    else {
+        NSDictionary *userInfo = @{
+            kOPOperationConditionKey : NSStringFromClass(self.class),
+            kOPLocationServicesEnabledKey : @(enabled),
+            kOPAuthorizationStatusKey : @(actual)
+        };
+        error = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:userInfo];
+        resultStatus = OPOperationConditionResultStatusFailed;
     }
-    
-    completion(error);
+
+    completion(resultStatus, error);
 }
 
 @end
