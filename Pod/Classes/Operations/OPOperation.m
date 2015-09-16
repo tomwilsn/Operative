@@ -113,22 +113,15 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     [self didChangeValueForKey:@"state"];
 }
 
-- (void) evaluateConditions
+- (void)evaluateConditions
 {
     NSAssert(_state == OPOperationStatePending, @"evaluateConditions was called out-of-order");
-    
+
     _state = OPOperationStateEvaluatingConditions;
-    
+
     [OPOperationConditionEvaluator evaluateConditions:_conditions operation:self completion:^(NSArray *failures) {
-        if (failures.count == 0)
-        {
-            self.state = OPOperationStateReady;
-        }
-        else
-        {
-            self.state = OPOperationStateCancelled;
-            [self finishWithErrors:failures];
-        }
+        [self.internalErrors addObjectsFromArray:failures];
+        self.state = OPOperationStateReady;
     }];
 }
 
@@ -208,26 +201,38 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 #pragma mark - Execution and Cancellation
 
-- (void) start
+- (void)start
 {
-    NSAssert(_state == OPOperationStateReady, @"This operation must be performed on an operation queue.");
-    
-    self.state = OPOperationStateExecuting;
-    
-    for (id<OPOperationObserver> observer in _observers)
-    {
-        [observer operationDidStart:self];
+    // [NSOperation start]; contains important logic that shouldn't be bypassed.
+    [super start];
+
+    // If the operation has been cancelled, we still need to enter the "Finished" state.
+    if ([self isCancelled]) {
+        [self finish];
     }
-    
-    [self execute];
 }
 
-- (void) execute
+- (void)main
+{
+    NSAssert(_state == OPOperationStateReady, @"This operation must be performed on an operation queue.");
+
+    if ([self.internalErrors count] == 0 && ![self isCancelled]) {
+        [self setState:OPOperationStateExecuting];
+        for (id <OPOperationObserver>observer in [self observers]) {
+            [observer operationDidStart:self];
+        }
+
+        [self execute];
+    } else {
+        [self finish];
+    }
+}
+
+- (void)execute
 {
     NSLog(@"%@ must override -execute.", NSStringFromClass([self class]));
     [self finishWithError:nil];
 }
-
 
 - (void) cancel
 {
