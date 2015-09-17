@@ -33,30 +33,35 @@
 
 @implementation OPGroupOperation
 
-- (instancetype) init
+- (instancetype)init
 {
     self = [super init];
-    if (self)
-    {
-        _internalQueue = [[OPOperationQueue alloc] init];
-        _internalQueue.suspended = YES;
-        _internalQueue.delegate = self;
-        
-        _finishingOperation = [NSBlockOperation blockOperationWithBlock:^{}];
-        
-        _aggregatedErrors = [[NSMutableArray alloc] init];
+    if (!self) {
+        return nil;
     }
+
+    _internalQueue = [[OPOperationQueue alloc] init];
+    _internalQueue.suspended = YES;
+    _internalQueue.delegate = self;
+
+    _finishingOperation = [NSBlockOperation blockOperationWithBlock:^{}];
+
+    _aggregatedErrors = [[NSMutableArray alloc] init];
+
     return self;
 }
 
-- (instancetype) initWithOperations:(NSArray *) operations
+- (instancetype)initWithOperations:(NSArray *)operations
 {
-    self = [super init];
-    
-    if (self)
-    {
-        [_internalQueue addOperations:operations waitUntilFinished:NO];
+    self = [self init];
+    if (!self) {
+        return nil;
     }
+
+    for (NSOperation *operation in operations) {
+        [_internalQueue addOperation:operation];
+    }
+
     return self;
 }
 
@@ -68,7 +73,7 @@
 
 - (void) execute
 {
-    self.internalQueue.suspended = false;
+    self.internalQueue.suspended = NO;
     [self.internalQueue addOperation:self.finishingOperation];
 }
 
