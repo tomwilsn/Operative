@@ -31,17 +31,17 @@
 {
     if ([operation isKindOfClass:[OPOperation class]])
     {
-        OPOperation *opOperation = (OPOperation *) operation;
-        
-//        NSLog(@"Adding operation: %@", opOperation);
-        
-        id<OPOperationObserver> observer =
-            [[OPBlockObserver alloc] initWithStartHandler:nil
-                                           produceHandler:^(OPOperation *operation, NSOperation *newOperation) {
-                                               [self addOperation:newOperation];
-                                           } finishHandler:^(OPOperation *operation, NSArray *errors) {
-                                               [self.delegate operationQueue:self operationDidFinish:operation withErrors:errors];
-                                           }];
+        OPOperation *opOperation = (OPOperation *)operation;
+
+        id <OPOperationObserver> observer = [[OPBlockObserver alloc] initWithStartHandler:nil
+                                                                           produceHandler:^(OPOperation *operation, NSOperation *newOperation) {
+                                                                               [self addOperation:newOperation];
+                                                                           }
+                                                                            finishHandler:^(OPOperation *operation, NSArray *errors) {
+                                                                                if ([self delegate] && [self.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
+                                                                                    [self.delegate operationQueue:self operationDidFinish:operation withErrors:errors];
+                                                                                }
+                                                                            }];
         
         [opOperation addObserver:observer];
         
@@ -94,7 +94,9 @@
         operation.completionBlock = ^(void) {
             __typeof__(self) strongSelf = weakSelf;
             NSOperation *strongOperation = weakOperation;
-            [weakSelf.delegate operationQueue:strongSelf operationDidFinish:strongOperation withErrors:@[]];
+            if ([strongSelf delegate] && [strongSelf.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
+                [strongSelf.delegate operationQueue:strongSelf operationDidFinish:strongOperation withErrors:@[]];
+            }
         };
     }
     
