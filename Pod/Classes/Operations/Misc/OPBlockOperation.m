@@ -21,44 +21,45 @@
 
 #import "OPBlockOperation.h"
 
-@interface OPBlockOperation()
+@interface OPBlockOperation ()
 
 @property (nonatomic, copy) OperationBlock block;
 
 @end
+
 @implementation OPBlockOperation
 
-- (instancetype) initWithBlock:(OperationBlock) block
+- (instancetype)initWithBlock:(OperationBlock)block
 {
     self = [super init];
-    if (self)
-    {
-        self.block = block;
+    if (!self) {
+        return nil;
     }
+
+    _block = [block copy];
+
     return self;
 }
 
-- (instancetype) initWithMainQueueBlock:(void (^)(void)) mainQueueBlock
+- (instancetype)initWithMainQueueBlock:(void (^)(void))mainQueueBlock
 {
-    void (^block)(void(^continuation)()) = ^(void(^continuation)()) {
+    OperationBlock block = ^(void(^continuation)()) {
         dispatch_async(dispatch_get_main_queue(), ^{
             mainQueueBlock();
             continuation();
         });
     };
+
     return [self initWithBlock:block];
 }
 
-- (void) execute
+- (void)execute
 {
-    if (self.block)
-    {
+    if (self.block) {
         self.block(^{
             [self finish];
         });
-    }
-    else
-    {
+    } else {
         [self finish];
     }
 }

@@ -21,11 +21,12 @@
 
 #import <Operative/Operative.h>
 
-typedef void (^OperationBlock)(void(^completion)(void));
+typedef void (^OperationBlock)(void (^completion)(void));
 
 @interface OPBlockOperation : OPOperation
 
-- (instancetype) initWithBlock:(OperationBlock) block;
-- (instancetype) initWithMainQueueBlock:(void (^)(void)) mainQueueBlock;
+- (instancetype)initWithBlock:(OperationBlock)block;
+
+- (instancetype)initWithMainQueueBlock:(void (^)(void))mainQueueBlock;
 
 @end
