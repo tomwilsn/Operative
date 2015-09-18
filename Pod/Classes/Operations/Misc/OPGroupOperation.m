@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 
 #import "OPGroupOperation.h"
-#import <Foundation/Foundation.h>
+#import "OPOperationQueue.h"
 
 @interface OPGroupOperation() <OPOperationQueueDelegate>
 
