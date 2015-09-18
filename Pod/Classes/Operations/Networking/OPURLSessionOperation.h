@@ -24,6 +24,6 @@
 
 @interface OPURLSessionOperation : OPOperation
 
-- (instancetype) initWithTask:(NSURLSessionTask *) task;
+- (instancetype)initWithTask:(NSURLSessionTask *)task;
 
 @end

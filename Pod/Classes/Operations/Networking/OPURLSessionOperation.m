@@ -22,44 +22,61 @@
 
 #import "OPURLSessionOperation.h"
 
+static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext;
+
 @interface OPURLSessionOperation()
 
 @property (strong, nonatomic) NSURLSessionTask *task;
-@property (assign, nonatomic) unsigned long kvoContext;
+
 @end
 
 @implementation OPURLSessionOperation
 
 
-- (instancetype) initWithTask:(NSURLSessionTask *) task
+- (instancetype)initWithTask:(NSURLSessionTask *)task
 {
     self = [super init];
-    if (self)
-    {
-        NSAssert(task.state == NSURLSessionTaskStateSuspended, @"Tasks must be suspended.");
-        self.task = task;
+    if (!self) {
+        return nil;
     }
+
+    NSAssert([task state] == NSURLSessionTaskStateSuspended, @"Tasks must be suspended.");
+
+    _task = task;
+
     return self;
 }
 
-- (void) execute
+- (void)execute
 {
-    NSAssert(self.task.state == NSURLSessionTaskStateSuspended, @"Task was resumed by something other than %@", self);
-    
-    [self.task addObserver:self forKeyPath:@"state" options:0 context:&_kvoContext];
+    NSAssert([self.task state] == NSURLSessionTaskStateSuspended, @"Task was resumed by something other than %@", self);
+
+    [self.task addObserver:self
+                forKeyPath:NSStringFromSelector(@selector(state))
+                   options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew)
+                   context:OPURLSessionOperationKVOContext];
+
     [self.task resume];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if (context == &_kvoContext)
-    {
-        [self.task removeObserver:self forKeyPath:@"state"];
-        [self finish];
+    if (context == OPURLSessionOperationKVOContext) {
+        if (object == [self task] && [keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
+            if ([object state] == NSURLSessionTaskStateCompleted) {
+                @try {
+                    [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
+                }
+                @catch (NSException * __unused exception) {}
+                [self finish];
+            }
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
-- (void) cancel
+- (void)cancel
 {
     [self.task cancel];
     [super cancel];
