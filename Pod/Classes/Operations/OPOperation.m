@@ -39,6 +39,7 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 @interface OPOperation()
 
 @property (assign, nonatomic) OPOperationState state;
+
 @property (strong, nonatomic) NSMutableArray *observers;
 
 @property (strong, nonatomic) NSMutableArray *internalErrors;
@@ -55,14 +56,16 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 - (instancetype) init
 {
     self = [super init];
-    if (self)
-    {
-        _state = OPOperationStateInitialized;
-        _observers = [[NSMutableArray alloc] init];
-        _conditions = [[NSMutableArray alloc] init];
-        
-        _internalErrors = [[NSMutableArray alloc] init];
+    if (!self) {
+        return nil;
     }
+
+    _state = OPOperationStateInitialized;
+    _observers = [[NSMutableArray alloc] init];
+    _conditions = [[NSMutableArray alloc] init];
+
+    _internalErrors = [[NSMutableArray alloc] init];
+
     return self;
 }
 
@@ -73,34 +76,33 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 #pragma mark - KVO
 
-+ (NSSet *) keyPathsForValuesAffectingIsReady
++ (NSSet *)keyPathsForValuesAffectingIsReady
 {
-    return [NSSet setWithObjects:@"state", nil];
+    return [NSSet setWithObject:NSStringFromSelector(@selector(state))];
 }
 
-+ (NSSet *) keyPathsForValuesAffectingIsExecuting
++ (NSSet *)keyPathsForValuesAffectingIsExecuting
 {
-    return [NSSet setWithObjects:@"state", nil];
+    return [NSSet setWithObject:NSStringFromSelector(@selector(state))];
 }
 
-+ (NSSet *) keyPathsForValuesAffectingIsFinished
++ (NSSet *)keyPathsForValuesAffectingIsFinished
 {
-    return [NSSet setWithObjects:@"state", nil];
+    return [NSSet setWithObject:NSStringFromSelector(@selector(state))];
 }
 
-+ (NSSet *) keyPathsForValuesAffectingIsCancelled
++ (NSSet *)keyPathsForValuesAffectingIsCancelled
 {
-    return [NSSet setWithObjects:@"state", nil];
+    return [NSSet setWithObject:NSStringFromSelector(@selector(state))];
 }
 
 #pragma mark - State
 
-- (void) setState:(OPOperationState)newState
+- (void)setState:(OPOperationState)newState
 {
-    [self willChangeValueForKey:@"state"];
-    
-    switch (_state)
-    {
+    [self willChangeValueForKey:NSStringFromSelector(@selector(state))];
+
+    switch (_state) {
         case OPOperationStateCancelled:
             break;
         case OPOperationStateFinished:
@@ -109,8 +111,8 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
             NSAssert(_state != newState, @"Performing invalid cyclic state transition.");
             _state = newState;
     }
-    
-    [self didChangeValueForKey:@"state"];
+
+    [self didChangeValueForKey:NSStringFromSelector(@selector(state))];
 }
 
 - (void)evaluateConditions
@@ -127,16 +129,14 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 #pragma mark - NSOperation Overrides
 
-- (BOOL) isReady
+- (BOOL)isReady
 {
-    switch (_state)
-    {
+    switch (_state) {
         case OPOperationStatePending:
-            if ([super isReady])
-            {
+            if ([super isReady]) {
                 [self evaluateConditions];
             }
-            
+
             return NO;
         case OPOperationStateReady:
             return [super isReady];
@@ -287,9 +287,8 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
         NSArray *combinedErrors = [_internalErrors arrayByAddingObjectsFromArray:errors];
         
         [self finishedWithErrors:combinedErrors];
-        
-        for (id<OPOperationObserver> observer in _observers)
-        {
+
+        for (id <OPOperationObserver> observer in _observers) {
             [observer operation:self didFinishWithErrors:combinedErrors];
         }
 
