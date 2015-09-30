@@ -129,12 +129,14 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     if (_state == OPOperationStateFinished) {
         return;
     }
-
+    
     NSAssert(_state != newState, @"Performing invalid cyclic state transition.");
-
+    
     [self willChangeValueForKey:NSStringFromSelector(@selector(state))];
-
-    _state = newState;
+    
+    @synchronized(self) {
+        _state = newState;
+    }
 
     [self didChangeValueForKey:NSStringFromSelector(@selector(state))];
 }
