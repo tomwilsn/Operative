@@ -249,10 +249,9 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     [self cancel];
 }
 
-- (void) produceOperation:(NSOperation *) operation
+- (void)produceOperation:(NSOperation *)operation
 {
-    for (id<OPOperationObserver> observer in _observers)
-    {
+    for (id <OPOperationObserver>observer in _observers) {
         [observer operation:self didProduceOperation:operation];
     }
 }

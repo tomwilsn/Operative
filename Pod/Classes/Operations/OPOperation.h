@@ -26,23 +26,29 @@
 
 @interface OPOperation : NSOperation
 
-@property (assign, nonatomic) BOOL userInitiated;
-@property (readonly, nonatomic) NSMutableArray *conditions;
+@property(assign, nonatomic) BOOL userInitiated;
 
-- (void) addCondition:(id<OPOperationCondition>) condition;
-- (void) addObserver:(id<OPOperationObserver>)observer;
-- (void) addDependency:(NSOperation *)operation;
+@property(readonly, nonatomic) NSMutableArray *conditions;
+
+- (void)addCondition:(id <OPOperationCondition>)condition;
+
+- (void)addObserver:(id <OPOperationObserver>)observer;
+
+- (void)addDependency:(NSOperation *)operation;
 
 // Operating...
-- (void) willEnqueue;
-- (void) execute;
+- (void)willEnqueue;
 
-- (void) cancelWithError:(NSError *) error;
+- (void)execute;
 
-- (void) finish;
-- (void) finishWithError:(NSError *) error;
-- (void) finishWithErrors:(NSArray *) errors;
+- (void)cancelWithError:(NSError *)error;
 
-- (void) finishedWithErrors:(NSArray *) errors;
+- (void)finish;
+
+- (void)finishWithError:(NSError *)error;
+
+- (void)finishWithErrors:(NSArray *)errors;
+
+- (void)finishedWithErrors:(NSArray *)errors;
 
 @end

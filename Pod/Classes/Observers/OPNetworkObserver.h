@@ -1,4 +1,4 @@
-// OPOperationObserver.h
+// OPNetworkObserver.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,22 +19,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-@import Foundation;
+#import "OPOperationObserver.h"
 
-@class OPOperation;
 
-@protocol OPOperationObserver <NSObject>
+@interface OPNetworkObserver : NSObject <OPOperationObserver>
 
-/// Invoked immediately prior to the `OPOperation`'s `-execute` method.
-- (void)operationDidStart:(OPOperation *)operation;
 
-/// Invoked when `OPOperation`'s `-produceOperation:` is executed.
-- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation;
-
-/**
-    Invoked as an `OPOperation` finishes, along with any errors produced during
-    execution (or readiness evaluation).
-*/
-- (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors;
 
 @end
