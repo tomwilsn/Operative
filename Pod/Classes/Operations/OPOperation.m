@@ -93,6 +93,7 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 
 @implementation OPOperation
+@synthesize state = _state;
 
 
 #pragma mark - KVO
@@ -122,6 +123,15 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 #pragma mark - State
 #pragma mark -
+
+- (OPOperationState)state
+{
+    OPOperationState value;
+    @synchronized(self) {
+        value = _state;
+    }
+    return value;
+}
 
 - (void)setState:(OPOperationState)newState
 {
@@ -153,7 +163,8 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     }];
 }
 
-#pragma mark - NSOperation Overrides
+
+#pragma mark - Overrides
 #pragma mark -
 
 - (BOOL)isReady
@@ -179,18 +190,6 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     }
 }
 
-- (BOOL)userInitiated
-{
-    return [self qualityOfService] == NSOperationQualityOfServiceUserInitiated;
-}
-
-- (void)setUserInitiated:(BOOL)userInitiated
-{
-    NSAssert([self state] < OPOperationStateExecuting, @"Cannot modify userInitiated after execution has begun.");
-
-    [self setQualityOfService:userInitiated ? NSOperationQualityOfServiceUserInitiated : NSOperationQualityOfServiceUtility];
-}
-
 - (BOOL)isExecuting
 {
     return [self state] == OPOperationStateExecuting;
@@ -199,6 +198,22 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 - (BOOL)isFinished
 {
     return [self state] == OPOperationStateFinished;
+}
+
+
+#pragma mark - QOS
+#pragma mark -
+
+- (BOOL)userInitiated
+{
+    return [self qualityOfService] == NSOperationQualityOfServiceUserInitiated;
+}
+
+- (void)setUserInitiated:(BOOL)userInitiated
+{
+    NSAssert([self state] < OPOperationStateExecuting, @"Cannot modify userInitiated after execution has begun.");
+    
+    [self setQualityOfService:userInitiated ? NSOperationQualityOfServiceUserInitiated : NSOperationQualityOfServiceUtility];
 }
 
 
@@ -288,7 +303,9 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     }
 }
 
+
 #pragma mark - Finishing
+#pragma mark -
 
 - (void)finish;
 {
