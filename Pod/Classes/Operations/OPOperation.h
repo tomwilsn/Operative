@@ -60,6 +60,8 @@
 
 - (void)cancelWithError:(NSError *)error;
 
+- (void)produceOperation:(NSOperation *)operation;
+
 /*
  *  This is a convenience method to simplify calling the actual
  *  -finishWithErrors: method, when an error isn't present
