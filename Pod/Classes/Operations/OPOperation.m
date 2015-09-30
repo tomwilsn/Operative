@@ -32,7 +32,6 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     OPOperationStateExecuting,
     OPOperationStateFinishing,
     OPOperationStateFinished,
-    OPOperationStateCancelled,
 };
 
 
@@ -95,10 +94,6 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     return [NSSet setWithObject:NSStringFromSelector(@selector(state))];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingIsCancelled
-{
-    return [NSSet setWithObject:NSStringFromSelector(@selector(state))];
-}
 
 #pragma mark - State
 
@@ -170,11 +165,6 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     return [self state] == OPOperationStateFinished;
 }
 
-- (BOOL)isCancelled
-{
-    return [self state] == OPOperationStateCancelled;
-}
-
 
 #pragma mark - Conditions
 #pragma mark -
@@ -244,13 +234,6 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     NSLog(@"%@ must override -execute.", NSStringFromClass([self class]));
 
     [self finishWithError:nil];
-}
-
-- (void)cancel
-{
-    [self setState:OPOperationStateCancelled];
-
-    [super cancel];
 }
 
 - (void)cancelWithError:(NSError *)error
