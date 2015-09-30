@@ -20,18 +20,42 @@
 // THE SOFTWARE.
 
 #import "OPOperation.h"
-#import "OPOperationObserver.h"
-#import "OPOperationConditionEvaluator.h"
 #import "OPOperationCondition.h"
+#import "OPOperationConditionEvaluator.h"
+#import "OPOperationObserver.h"
+
 
 typedef NS_ENUM(NSUInteger, OPOperationState) {
+    /**
+     *  The initial state of an operation
+     */
     OPOperationStateInitialized,
+    /**
+     *  The `OPOperation` is ready to begin evaluating conditions.
+     */
     OPOperationStatePending,
+    /**
+     *  The `OPOperation` is evaluating conditions.
+     */
     OPOperationStateEvaluatingConditions,
+    /**
+     *  The `OPOperation`'s conditions have all been satisfied, and it is ready
+     *  to execute.
+     */
     OPOperationStateReady,
+    /**
+     *  The `OPOperation` is executing
+     */
     OPOperationStateExecuting,
+    /**
+     *  Execution of the `OPOperation` has finished, but it has not yet notified
+     *  the queue of this.
+     */
     OPOperationStateFinishing,
-    OPOperationStateFinished,
+    /**
+     *  The `OPOperation` has finished executing.
+     */
+    OPOperationStateFinished
 };
 
 
@@ -41,19 +65,20 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 @property (strong, nonatomic, readwrite) NSMutableArray *conditions;
 
 /**
- *  A private property to ensure we only notify the observers once that the
+ *  A private property to ensure we only notify the observers one time upon
  *  operation has finished.
  */
 @property (assign, nonatomic) BOOL hasFinishedAlready;
 
 /**
- *  A private property used to indicate the state of the operation
+ *  A private property used to indicate the state of the operation.
+ *  Property is KVO observable.
  */
 @property (assign, nonatomic) OPOperationState state;
 
 /**
  *  A private property used to store `NSError` objects in the event that
- *  the operation encounters an error
+ *  the operation encounters an error.
  */
 @property (strong, nonatomic) NSMutableArray *internalErrors;
 
@@ -68,12 +93,6 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 
 @implementation OPOperation
-
-
-- (void)willEnqueue
-{
-    [self setState:OPOperationStatePending];
-}
 
 
 #pragma mark - KVO
@@ -95,7 +114,14 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 }
 
 
+- (void)willEnqueue
+{
+    [self setState:OPOperationStatePending];
+}
+
+
 #pragma mark - State
+#pragma mark -
 
 - (void)setState:(OPOperationState)newState
 {
@@ -126,18 +152,26 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 }
 
 #pragma mark - NSOperation Overrides
+#pragma mark -
 
 - (BOOL)isReady
 {
     switch ([self state]) {
+        case OPOperationStateInitialized:
+            return [self isCancelled];
+
         case OPOperationStatePending:
+            if ([self isCancelled]) {
+                return YES;
+            }
             if ([super isReady]) {
                 [self evaluateConditions];
             }
-
             return NO;
+
         case OPOperationStateReady:
-            return [super isReady];
+            return [super isReady] || [self isCancelled];
+
         default:
             return NO;
     }

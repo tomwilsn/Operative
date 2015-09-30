@@ -25,6 +25,13 @@
 @protocol OPOperationCondition;
 
 
+/**
+ *  `OPOperation` is a subclass of `NSOperation`
+ *  from which all other operations within `Operative` should be derived.
+ *  This class adds both Conditions and Observers, which allow the operation
+ *  to define extended readiness requirements, as well as notify many
+ *  interested parties about interesting operation state changes
+ */
 @interface OPOperation : NSOperation
 
 /**
@@ -47,15 +54,36 @@
 @property (strong, nonatomic, readonly) NSMutableArray *conditions;
 
 
+///---------------------------------------------
+/// @name Conditions, Observers and Dependencies
+///---------------------------------------------
+
 - (void)addCondition:(id <OPOperationCondition>)condition;
 
 - (void)addObserver:(id <OPOperationObserver>)observer;
 
 - (void)addDependency:(NSOperation *)operation;
 
-// Operating...
+
+///---------------------------------
+/// @name Execution and Cancellation
+///---------------------------------
+
+/**
+ *  Indicates that the Operation can now begin to evaluate
+ *  readiness conditions, if appropriate.
+ */
 - (void)willEnqueue;
 
+/**
+ *  -execute is the entry point of execution for all `OPOperation` subclasses.
+ *  If you subclass `OPOperation` and wish to customize its execution, you
+ *  would do so by overriding the -execute method.
+ *  At some point, your `OPOperation` subclass must call one of the "finish"
+ *  methods defined below; this is how you indicate that your operation has
+ *  finished its execution, and that operations dependent on yours can
+ *  re-evaluate their readiness state.
+ */
 - (void)execute;
 
 - (void)cancelWithError:(NSError *)error;
