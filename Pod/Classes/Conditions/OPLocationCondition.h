@@ -19,16 +19,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
 #import "OPOperationCondition.h"
+
 
 typedef NS_ENUM(NSUInteger, OPLocationConditionUsage) {
     OPLocationConditionWhenInUse,
     OPLocationConditionAlways,
 };
 
+
+/**
+ *  A condition for verifying access to the user's location.
+ *
+ *  - returns: An `NSObject` conforming to the `OPOperationCondition` protocol
+ */
 @interface OPLocationCondition : NSObject <OPOperationCondition>
 
-- (instancetype) initWithUsage:(OPLocationConditionUsage) usage;
+- (instancetype)initWithUsage:(OPLocationConditionUsage)usage;
 
 @end
