@@ -139,7 +139,7 @@ NSString *const kOPOperationHostKey = @"OperationHost";
         }
         
         if (ref) {
-            self.reachabilityRefs[host] = (__bridge id _Nullable)(ref);
+            self.reachabilityRefs[host] = (__bridge id)(ref);
             
             BOOL reachable = NO;
             SCNetworkReachabilityFlags flags = 0;
