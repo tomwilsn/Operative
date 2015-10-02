@@ -21,7 +21,7 @@
 
 #import "OPOperationConditionEvaluator.h"
 #import "OPOperationCondition.h"
-#import "NSError+OPOperationErrors.h"
+#import "NSError+Operative.h"
 
 @implementation OPOperationConditionEvaluator
 

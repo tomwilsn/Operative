@@ -1,4 +1,4 @@
-// NSMutableDictionary+Operator.m
+// UIUserNotificationSettings+Operative.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,22 +20,17 @@
 // THE SOFTWARE.
 
 
-#import "NSMutableDictionary+Operator.h"
+#if TARGET_OS_IPHONE
 
-@implementation NSMutableDictionary (Operator)
+#import <UIKit/UIKit.h>
 
-+ (NSMutableDictionary *) sequence:(id<NSFastEnumeration>) sequence keyMapper:(id (^)(id obj))keyMapper
-{
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    for (id obj in sequence)
-    {
-        id key = keyMapper(obj);
-        if (key)
-        {
-            dict[key] = obj;
-        }
-    }
-    return dict;
-}
+
+@interface UIUserNotificationSettings (Operative)
+
+- (BOOL)containsSettings:(UIUserNotificationSettings *)settings;
+
+- (UIUserNotificationSettings *)settingsByMerging:(UIUserNotificationSettings *)settings;
 
 @end
+
+#endif

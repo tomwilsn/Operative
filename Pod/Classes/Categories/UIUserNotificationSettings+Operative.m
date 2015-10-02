@@ -1,4 +1,4 @@
-// UIUserNotificationSettings+Operator.m
+// UIUserNotificationSettings+Operative.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,50 +21,51 @@
 
 #if TARGET_OS_IPHONE
 
-#import "UIUserNotificationSettings+Operator.h"
-#import "NSMutableDictionary+Operator.h"
+#import "UIUserNotificationSettings+Operative.h"
+#import "NSMutableDictionary+Operative.h"
 
-@implementation UIUserNotificationSettings (Operator)
+@implementation UIUserNotificationSettings (Operative)
 
-- (BOOL) containsSettings:(UIUserNotificationSettings *) settings;
+- (BOOL)containsSettings:(UIUserNotificationSettings *)settings;
 {
     if (((self.types & UIUserNotificationTypeBadge) == 0) &&
-        ((settings.types & UIUserNotificationTypeBadge) != 0))
+        ((settings.types & UIUserNotificationTypeBadge) != 0)) {
         return NO;
-    else if (((self.types & UIUserNotificationTypeSound) == 0) &&
-        ((settings.types & UIUserNotificationTypeSound) != 0))
+    } else if (((self.types & UIUserNotificationTypeSound) == 0) &&
+               ((settings.types & UIUserNotificationTypeSound) != 0)) {
         return NO;
-    else if (((self.types & UIUserNotificationTypeAlert) == 0) &&
-             ((settings.types & UIUserNotificationTypeAlert) != 0))
+    } else if (((self.types & UIUserNotificationTypeAlert) == 0) &&
+               ((settings.types & UIUserNotificationTypeAlert) != 0)) {
         return NO;
-    
+    }
+
     NSSet *otherCategories = settings.categories ? settings.categories : [NSSet set];
     NSSet *myCategories = self.categories ? self.categories : [NSSet set];
-    
+
     return [otherCategories isSubsetOfSet:myCategories];
 }
 
-- (UIUserNotificationSettings *) settingsByMerging:(UIUserNotificationSettings *) settings;
+- (UIUserNotificationSettings *)settingsByMerging:(UIUserNotificationSettings *)settings;
 {
     UIUserNotificationType mergedTypes = settings.types & self.types;
-    
+
     NSSet *myCategories = self.categories ? self.categories : [NSSet set];
-    
+
     NSMutableDictionary *existingCategoriesByIdentifier = [NSMutableDictionary sequence:myCategories keyMapper:^id(id obj) {
         UIUserNotificationCategory *type = obj;
         return type.identifier;
     }];
-    
+
     NSSet *newCategories = settings.categories ? settings.categories : [NSSet set];
     NSMutableDictionary *newCategoriesByIdentifier = [NSMutableDictionary sequence:newCategories keyMapper:^id(id obj) {
         UIUserNotificationCategory *type = obj;
         return type.identifier;
     }];
-    
+
     [newCategoriesByIdentifier enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         existingCategoriesByIdentifier[key] = obj;
     }];
-    
+
     NSSet *mergedCategories = [NSSet setWithArray:existingCategoriesByIdentifier.allValues];
     return [UIUserNotificationSettings settingsForTypes:mergedTypes categories:mergedCategories];
 }

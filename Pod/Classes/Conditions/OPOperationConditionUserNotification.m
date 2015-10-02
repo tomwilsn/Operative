@@ -25,8 +25,8 @@
 
 #import "OPOperation.h"
 
-#import "UIUserNotificationSettings+Operator.h"
-#import "NSError+OPOperationErrors.h"
+#import "UIUserNotificationSettings+Operative.h"
+#import "NSError+Operative.h"
 
 #import "OPOperationConditionMutuallyExclusive.h"
 

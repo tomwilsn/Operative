@@ -1,4 +1,4 @@
-// NSOperation+Operator.m
+// NSOperation+Operative.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,35 +19,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSOperation+Operator.h"
+#import <Foundation/Foundation.h>
 
-@implementation NSOperation (Operator)
 
-- (void) addCompletionBlock:(void (^)(void))block
-{
-    // If we already have a completion block
-    if (self.completionBlock)
-    {
-        // Construct a new block that calls the existing block
-        void (^existing)(void) = self.completionBlock;
+@interface NSOperation (Operative)
 
-        self.completionBlock = ^{
-            existing();
-            block();
-        };
-    }
-    else
-    {
-        self.completionBlock = block;
-    }
-}
+- (void)addCompletionBlock:(void (^)(void))block;
 
-- (void) addDependencies:(NSArray *) dependencies
-{
-    for (NSOperation *dependency in dependencies)
-    {
-        [self addDependency:dependency];
-    }
-}
+- (void)addDependencies:(NSArray *)dependencies;
 
 @end

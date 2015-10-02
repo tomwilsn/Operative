@@ -21,10 +21,10 @@
 
 // https://github.com/Specta/Specta
 
-#import <Operative/NSError+OPOperationErrors.h>
-#import <Operative/NSMutableDictionary+Operator.h>
-#import <Operative/NSOperation+Operator.h>
-#import <Operative/UIUserNotificationSettings+Operator.h>
+#import <Operative/NSError+Operative.h>
+#import <Operative/NSMutableDictionary+Operative.h>
+#import <Operative/NSOperation+Operative.h>
+#import <Operative/UIUserNotificationSettings+Operative.h>
 
 SpecBegin(CategoriesTests)
 

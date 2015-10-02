@@ -22,7 +22,7 @@
 
 #import "OPTimeoutObserver.h"
 #import "OPOperation.h"
-#import "NSError+OPOperationErrors.h"
+#import "NSError+Operative.h"
 
 NSString * const kTimeoutKey = @"Timeout";
 

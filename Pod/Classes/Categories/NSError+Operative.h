@@ -1,4 +1,4 @@
-// NSError+OPOperationErrors.m
+// NSError+Operative.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,23 +19,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSError+OPOperationErrors.h"
+#import <Foundation/Foundation.h>
 
 
-NSString *const kOPOperationErrorDomain = @"OPOperationErrors";
-NSString *const kOPOperationConditionKey = @"OPOperationCondition";
+extern NSString *const kOPOperationErrorDomain;
+extern NSString *const kOPOperationConditionKey;
+
+typedef NS_ENUM(NSUInteger, OPOperationErrorCode) {
+    OPOperationErrorCodeConditionFailed = 1,
+    OPOperationErrorCodeExecutionFailed
+};
 
 
-@implementation NSError (OPOperationErrors)
+@interface NSError (Operative)
 
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code
-{
-    return [NSError errorWithCode:code userInfo:nil];
-}
++ (instancetype)errorWithCode:(OPOperationErrorCode)code;
 
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo
-{
-    return [NSError errorWithDomain:kOPOperationErrorDomain code:code userInfo:userInfo];
-}
++ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo;
 
 @end

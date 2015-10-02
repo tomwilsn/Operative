@@ -21,7 +21,7 @@
 
 #import "OPReachabilityCondition.h"
 
-#import "NSError+OPOperationErrors.h"
+#import "NSError+Operative.h"
 
 @import SystemConfiguration;
 

@@ -23,7 +23,7 @@
 #import "OPLocationCondition.h"
 #import "OPOperationConditionMutuallyExclusive.h"
 
-#import "NSError+OPOperationErrors.h"
+#import "NSError+Operative.h"
 
 #import <CoreLocation/CoreLocation.h>
 
