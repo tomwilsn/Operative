@@ -56,9 +56,9 @@
 
 
 /**
-    An `OPOperationObserver` that will cause the network activity indicator to appear
-    as long as the `OPOperation` to which it is attached is executing.
-*/
+ *  An `OPOperationObserver` that will cause the network activity indicator to appear
+ *  as long as the `OPOperation` to which it is attached is executing.
+ */
 @implementation OPNetworkObserver
 
 - (void)operationDidStart:(OPOperation *)operation

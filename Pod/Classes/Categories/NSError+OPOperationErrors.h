@@ -19,20 +19,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+@import Foundation;
 
-#import <Foundation/Foundation.h>
 
-extern NSString * const kOPOperationErrorDomain;
-extern NSString * const kOPOperationConditionKey;
+extern NSString *const kOPOperationErrorDomain;
+extern NSString *const kOPOperationConditionKey;
 
 typedef NS_ENUM(NSUInteger, OPOperationErrorCode) {
     OPOperationErrorCodeConditionFailed = 1,
     OPOperationErrorCodeExecutionFailed
 };
 
+
 @interface NSError (OPOperationErrors)
 
-+ (instancetype) errorWithCode:(OPOperationErrorCode) code;
-+ (instancetype) errorWithCode:(OPOperationErrorCode) code userInfo:(NSDictionary *) userInfo;
++ (instancetype)errorWithCode:(OPOperationErrorCode)code;
+
++ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo;
 
 @end

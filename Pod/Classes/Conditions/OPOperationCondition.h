@@ -19,7 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
 #import "OPOperation.h"
 
 
@@ -27,6 +28,7 @@ typedef NS_ENUM(NSUInteger, OPOperationConditionResultStatus) {
     OPOperationConditionResultStatusSatisfied,
     OPOperationConditionResultStatusFailed,
 };
+
 
 @protocol OPOperationCondition <NSObject>
 

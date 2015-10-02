@@ -1,4 +1,4 @@
-// NSError+OPOperationErrors.m
+// OPReachabilityCondition.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,23 +19,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSError+OPOperationErrors.h"
+@import Foundation;
+
+#import "OPOperationCondition.h"
 
 
-NSString *const kOPOperationErrorDomain = @"OPOperationErrors";
-NSString *const kOPOperationConditionKey = @"OPOperationCondition";
+/**
+ *  This is a condition that performs a very high-level reachability check.
+ *  It does *not* perform a long-running reachability check, nor does it
+ *  respond to changes in reachability. Reachability is evaluated once when
+ *  the operation to which this is attached is asked about its readiness.
+ */
+@interface OPReachabilityCondition : NSObject <OPOperationCondition>
 
-
-@implementation NSError (OPOperationErrors)
-
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code
-{
-    return [NSError errorWithCode:code userInfo:nil];
-}
-
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo
-{
-    return [NSError errorWithDomain:kOPOperationErrorDomain code:code userInfo:userInfo];
-}
+- (instancetype)initWithHost:(NSURL *)host;
 
 @end
