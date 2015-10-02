@@ -22,7 +22,7 @@
 #if TARGET_OS_IPHONE
 
 #import "OPOperation.h"
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 @interface OPAlertOperation : OPOperation
 

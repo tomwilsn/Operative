@@ -23,7 +23,7 @@
 
 #import "NSError+Operative.h"
 
-@import SystemConfiguration;
+#import <SystemConfiguration/SystemConfiguration.h>
 
 
 NSString *const kOPOperationHostKey = @"OperationHost";
