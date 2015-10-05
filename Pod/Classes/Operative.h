@@ -30,7 +30,7 @@
 // Operations
 #import "OPBlockOperation.h"
 #import "OPAlertOperation.h"
-#import "OPURLSessionOperation.h"
+#import "OPURLSessionTaskOperation.h"
 #import "OPGroupOperation.h"
 #import "OPLocationOperation.h"
 #import "OPDelayOperation.h"

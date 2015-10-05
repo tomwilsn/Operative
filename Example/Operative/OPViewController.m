@@ -103,7 +103,7 @@
 //                                                   NSLog(@"%@", dict.description);
                                                }];
     
-    OPURLSessionOperation *urlOperation = [[OPURLSessionOperation alloc] initWithTask:sessionTask];
+    OPURLSessionTaskOperation *urlOperation = [[OPURLSessionTaskOperation alloc] initWithTask:sessionTask];
     
     [urlOperation addObserver:[[OPBlockObserver alloc] initWithStartHandler:^(OPOperation *operation) {
         NSLog(@"URL Operation started!");

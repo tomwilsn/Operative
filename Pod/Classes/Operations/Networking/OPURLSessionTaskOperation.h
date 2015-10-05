@@ -19,11 +19,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "OPOperation.h"
 
-#import <Operative/Operative.h>
 
-@interface OPURLSessionOperation : OPOperation
+/**
+ *  `OPURLSessionTaskOperation` is an `OPOperation` that lifts an `NSURLSessionTask`
+ *  into an operation.
+ *
+ *  Note that this operation does not participate in any of the delegate callbacks
+ *  of an `NSURLSession`, but instead uses Key-Value-Observing to know when the
+ *  task has been completed. It also does not get notified about any errors that
+ *  occurred during execution of the task.
+ *
+ *  - returns: An instance of an `OPURLSessionTaskOperation`
+ */
+@interface OPURLSessionTaskOperation : OPOperation
 
-- (instancetype)initWithTask:(NSURLSessionTask *)task;
+- (instancetype)initWithTask:(NSURLSessionTask *)task NS_DESIGNATED_INITIALIZER;
 
 @end

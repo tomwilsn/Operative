@@ -20,11 +20,22 @@
 // THE SOFTWARE.
 
 
-#import <Operative/Operative.h>
+#import "OPOperation.h"
+
 #import <CoreLocation/CoreLocation.h>
 
+
+/**
+ *  `OPLocationOperation` is an `OPOperation` subclass to do a "one-shot"
+ *  request to get the user's current location, with a desired accuracy.
+ *  This operation will prompt for `WhenInUse` location authorization,
+ *  if the app does not already have it.
+ *
+ *  - returns: An instance of `OPLocationOperation`
+ */
 @interface OPLocationOperation : OPOperation
 
-- (instancetype) initWithAccuracy:(CLLocationAccuracy) accuracy locationHandler:(void (^)(CLLocation *location))locationHandler;
+- (instancetype)initWithAccuracy:(CLLocationAccuracy)accuracy
+                 locationHandler:(void (^)(CLLocation *location))locationHandler NS_DESIGNATED_INITIALIZER;
 
 @end

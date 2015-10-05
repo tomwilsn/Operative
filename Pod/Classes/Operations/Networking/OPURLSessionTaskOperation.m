@@ -19,19 +19,69 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "OPURLSessionTaskOperation.h"
 
-#import "OPURLSessionOperation.h"
 
 static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext;
 
-@interface OPURLSessionOperation()
+
+@interface OPURLSessionTaskOperation ()
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 @property (strong, nonatomic) NSURLSessionTask *task;
 
 @end
 
-@implementation OPURLSessionOperation
 
+@implementation OPURLSessionTaskOperation
+
+
+#pragma mark - Overrides
+#pragma mark -
+
+- (void)execute
+{
+    NSAssert([self.task state] == NSURLSessionTaskStateSuspended, @"Task was resumed by something other than %@", self);
+
+    [self.task addObserver:self
+                forKeyPath:NSStringFromSelector(@selector(state))
+                   options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew)
+                   context:OPURLSessionOperationKVOContext];
+
+    [self.task resume];
+}
+
+- (void)cancel
+{
+    [self.task cancel];
+    [super cancel];
+}
+
+
+#pragma mark - KVO
+#pragma mark -
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == OPURLSessionOperationKVOContext) {
+        if (object == [self task] && [keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
+            if ([object state] == NSURLSessionTaskStateCompleted) {
+                @try {
+                    [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
+                }
+                @catch (NSException *__unused exception) {}
+                [self finish];
+            }
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
 
 - (instancetype)initWithTask:(NSURLSessionTask *)task
 {
@@ -47,39 +97,14 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
     return self;
 }
 
-- (void)execute
+- (instancetype)init
 {
-    NSAssert([self.task state] == NSURLSessionTaskStateSuspended, @"Task was resumed by something other than %@", self);
-
-    [self.task addObserver:self
-                forKeyPath:NSStringFromSelector(@selector(state))
-                   options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew)
-                   context:OPURLSessionOperationKVOContext];
-
-    [self.task resume];
-}
-
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if (context == OPURLSessionOperationKVOContext) {
-        if (object == [self task] && [keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
-            if ([object state] == NSURLSessionTaskStateCompleted) {
-                @try {
-                    [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
-                }
-                @catch (NSException * __unused exception) {}
-                [self finish];
-            }
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    self = [super init];
+    if (!self) {
+        return nil;
     }
-}
-
-- (void)cancel
-{
-    [self.task cancel];
-    [super cancel];
+    
+    return self;
 }
 
 @end
