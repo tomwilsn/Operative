@@ -21,47 +21,68 @@
 
 #import "OPBlockOperation.h"
 
+
 @interface OPBlockOperation ()
 
-@property (nonatomic, copy) OperationBlock block;
+@property (copy, nonatomic) OPOperationBlock block;
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 @end
 
 @implementation OPBlockOperation
 
-- (instancetype)initWithBlock:(OperationBlock)block
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
 
-    _block = [block copy];
-
-    return self;
-}
-
-- (instancetype)initWithMainQueueBlock:(void (^)(void))mainQueueBlock
-{
-    OperationBlock block = ^(void(^continuation)()) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            mainQueueBlock();
-            continuation();
-        });
-    };
-
-    return [self initWithBlock:block];
-}
+#pragma mark - Overrides
+#pragma mark -
 
 - (void)execute
 {
-    if (self.block) {
+    if ([self block]) {
         self.block(^{
             [self finish];
         });
     } else {
         [self finish];
     }
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithBlock:(OPOperationBlock)block
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    _block = [block copy];
+    
+    return self;
+}
+
+- (instancetype)initWithMainQueueBlock:(void (^)(void))mainQueueBlock
+{
+    OPOperationBlock block = ^(void(^continuation)()) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            mainQueueBlock();
+            continuation();
+        });
+    };
+    
+    return [self initWithBlock:block];
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    return self;
 }
 
 @end

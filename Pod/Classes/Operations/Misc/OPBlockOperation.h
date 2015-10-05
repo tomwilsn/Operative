@@ -21,12 +21,45 @@
 
 #import <Operative/Operative.h>
 
-typedef void (^OperationBlock)(void (^completion)(void));
 
+/**
+ *  An operation block that takes a block as it's parameter
+ *
+ *  @param ^completion: Block to be executed upon completion of an
+ *  `OPBlockOperation`
+ */
+typedef void (^OPOperationBlock)(void (^completion)(void));
+
+
+/**
+ *  A subclass of `OPOperation` to execute a block.
+ *  - returns: An instance of an `OPBlockOperation`
+ */
 @interface OPBlockOperation : OPOperation
 
-- (instancetype)initWithBlock:(OperationBlock)block;
+/**
+ *  Designated Initialized for `OPBlockOperation`
+ *
+ *  @param block: The block to run when the operation executes. This
+ *  block will be run on an arbitrary queue. The parameter passed to the
+ *  block **MUST** be invoked by your code, or else the `OPBlockOperation`
+ *  will never finish executing. If this parameter is `nil`, the operation
+ *  will immediately finish.
+ *
+ *  @return An instance of an `OPBlockOperation`
+ */
+- (instancetype)initWithBlock:(OPOperationBlock)block NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  A convenience initializer to execute a block on the main queue.
+ *
+ *  @param mainQueueBlock: The block to execute on the main queue. Note
+ *  that this block does not have a "continuation" block to execute (unlike
+ *  the designated initializer). The operation will be automatically ended
+ *  after the `mainQueueBlock` is executed.
+ *
+ *  @return An instance of an `OPBlockOperation` that will run on the main queue
+ */
 - (instancetype)initWithMainQueueBlock:(void (^)(void))mainQueueBlock;
 
 @end
