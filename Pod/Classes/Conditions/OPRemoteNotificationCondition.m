@@ -26,9 +26,9 @@
 #import "NSError+Operative.h"
 
 
-NSString *const kOPRemoteNotificationName = @"RemoteNotificationPermissionNotification";
-NSString *const kOPRemoteNotificationOperationTokenKey = @"RemoteNotificationOperationToken";
-NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOperationError";
+static NSString *const kOPRemoteNotificationName = @"RemoteNotificationPermissionNotification";
+static NSString *const kOPRemoteNotificationOperationTokenKey = @"RemoteNotificationOperationToken";
+static NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOperationError";
 
 
 /**
@@ -66,6 +66,9 @@ NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOpe
 @implementation OPRemoteNotificationCondition
 
 
+#pragma mark - Class Methods
+#pragma mark -
+
 + (void)didReceiveNotificationToken:(NSData *)token
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:kOPRemoteNotificationName object:nil userInfo:@{
@@ -80,24 +83,7 @@ NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOpe
     }];
 }
 
-#pragma mark - Lifecycle
-#pragma mark -
-
-- (instancetype)initWithApplication:(UIApplication *)application
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
-    _application = application;
-
-    _remoteNotificationQueue = [[OPOperationQueue alloc] init];
-    
-    return self;
-}
-
-#pragma mark - OPOperationCondition
+#pragma mark - OPOperationCondition Protocol
 #pragma mark -
 
 - (NSString *)name
@@ -138,6 +124,22 @@ NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOpe
                                                                                  }
                                                                              }];
     [self.remoteNotificationQueue addOperation:permissionOperation];
+}
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithApplication:(UIApplication *)application
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _application = application;
+    _remoteNotificationQueue = [[OPOperationQueue alloc] init];
+
+    return self;
 }
 
 @end
@@ -198,7 +200,6 @@ NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOpe
     }
     
     _application = application;
-    
     _handler = [handler copy];
 
     // This operation cannot run at the same time as any other remote notification
@@ -211,6 +212,5 @@ NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotificationOpe
     
     return self;
 }
-
 
 @end
