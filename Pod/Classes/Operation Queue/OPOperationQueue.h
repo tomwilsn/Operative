@@ -21,21 +21,46 @@
 
 #import <Foundation/Foundation.h>
 
+
 @class OPOperationQueue;
 
+
+/**
+ *  The delegate of an `OPOperationQueue` can respond to `OPOperation` lifecycle
+ *  events by implementing these methods.
+ *
+ *  In general, implementing `OPOperationQueueDelegate` is not necessary;
+ *  you would want to use an `OPOperationObserver` instead.
+ *  However, there are a couple of situations where using
+ *  `OPOperationQueueDelegate` can lead to simpler code.
+ *  For example, `OPGroupOperation` is the delegate of its own internal
+ *  `OPOperationQueue` and uses it to manage dependencies.
+ */
 @protocol OPOperationQueueDelegate <NSObject>
 
 @optional
-- (void) operationQueue:(OPOperationQueue *) operationQueue willAddOperation:(NSOperation *) operation;
-- (void) operationQueue:(OPOperationQueue *) operationQueue operationDidFinish:(NSOperation *) operation withErrors:(NSArray *) errors;
+
+- (void)operationQueue:(OPOperationQueue *)operationQueue willAddOperation:(NSOperation *)operation;
+
+- (void)operationQueue:(OPOperationQueue *)operationQueue operationDidFinish:(NSOperation *)operation withErrors:(NSArray *)errors;
 
 @end
 
+
+/**
+ *  `OPOperationQueue` is an `NSOperationQueue` subclass that implements a large
+ *  number of "extra features" related to the `OPOperation` class:
+ *
+ *  - Notifying a delegate of all operation completion
+ *  - Extracting generated dependencies from operation conditions
+ *  - Setting up dependencies to enforce mutual exclusivity
+ */
 @interface OPOperationQueue : NSOperationQueue
 
-@property (weak, nonatomic) id<OPOperationQueueDelegate> delegate;
+@property (weak, nonatomic) id <OPOperationQueueDelegate>delegate;
 
-- (void) addOperation:(NSOperation *)operation;
-- (void) addOperations:(NSArray *)operations waitUntilFinished:(BOOL)wait;
+- (void)addOperation:(NSOperation *)operation;
+
+- (void)addOperations:(NSArray *)operations waitUntilFinished:(BOOL)wait;
 
 @end
