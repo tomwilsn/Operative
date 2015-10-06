@@ -22,6 +22,10 @@
 #import "OPOperationObserver.h"
 
 
+/**
+ *  An `OPOperationObserver` that will cause the network activity indicator
+ *  to appear as long as the `OPOperation` to which it is attached is executing.
+ */
 @interface OPNetworkObserver : NSObject <OPOperationObserver>
 
 

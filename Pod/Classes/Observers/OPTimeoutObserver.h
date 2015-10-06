@@ -19,13 +19,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
 #import "OPOperationObserver.h"
 
-extern NSString * const kTimeoutKey;
 
+/**
+ *  `OPTimeoutObserver` is a way to make an `OPOperation` automatically
+ *  time out and cancel after a specified time interval.
+ *
+ *  - returns: An instance of an `OPTimeoutObserver`
+ */
 @interface OPTimeoutObserver : NSObject <OPOperationObserver>
 
-- (instancetype) initWithTimeout:(NSTimeInterval) timeout;
+- (instancetype)initWithTimeout:(NSTimeInterval)timeout NS_DESIGNATED_INITIALIZER;
 
 @end

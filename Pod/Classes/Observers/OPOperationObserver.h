@@ -25,16 +25,16 @@
 
 @protocol OPOperationObserver <NSObject>
 
-/// Invoked immediately prior to the `OPOperation`'s `-execute` method.
+// Invoked immediately prior to the `OPOperation`'s `-execute` method.
 - (void)operationDidStart:(OPOperation *)operation;
 
-/// Invoked when `OPOperation`'s `-produceOperation:` is executed.
+// Invoked when `OPOperation`'s `-produceOperation:` is executed.
 - (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation;
 
 /**
-    Invoked as an `OPOperation` finishes, along with any errors produced during
-    execution (or readiness evaluation).
-*/
+ *  Invoked as an `OPOperation` finishes, along with any errors produced during
+ *  execution (or readiness evaluation).
+ */
 - (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors;
 
 @end

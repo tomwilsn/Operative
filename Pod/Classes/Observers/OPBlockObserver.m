@@ -21,35 +21,50 @@
 
 #import "OPBlockObserver.h"
 
+
 @implementation OPBlockObserver
 
-- (instancetype) initWithStartHandler:(void (^)(OPOperation *operation)) startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation)) produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+
+#pragma mark - OPOperationObserver Protocol
+#pragma mark -
+
+- (void)operationDidStart:(OPOperation *)operation
+{
+    if ([self startHandler]) {
+        self.startHandler(operation);
+    }
+}
+
+- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
+{
+    if ([self produceHander]) {
+        self.produceHander(operation, newOperation);
+    }
+}
+
+- (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
+{
+    if ([self finishHandler]) {
+        self.finishHandler(operation, errors);
+    }
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
 {
     self = [super init];
-    if (self)
-    {
-        self.startHandler = startHandler;
-        self.produceHander = produceHandler;
-        self.finishHandler = finishHandler;
+    if (!self) {
+        return nil;
     }
+
+    _startHandler = [startHandler copy];
+    _produceHander = [produceHandler copy];
+    _finishHandler = [finishHandler copy];
+
     return self;
-}
-
-#pragma mark - OPOperationObserver
-
-- (void) operationDidStart:(OPOperation *)operation
-{
-    if (_startHandler) _startHandler(operation);
-}
-
-- (void) operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
-{
-    if (_produceHander) _produceHander(operation, newOperation);
-}
-
-- (void) operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
-{
-    if (_finishHandler) _finishHandler(operation, errors);
 }
 
 @end

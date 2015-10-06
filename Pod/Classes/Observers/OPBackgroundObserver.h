@@ -25,12 +25,12 @@
 
 
 /**
-  `OPBackgroundObserver` is an `OPOperationObserver` that will automatically begin
-  and end a background task if the application transitions to the background.
-  This would be useful if you had a vital `OPOperation` whose execution *must* complete,
-  regardless of the activation state of the app. Some kinds network connections
-  may fall in to this category, for example.
-*/
+ *  `OPBackgroundObserver` is an `OPOperationObserver` that will automatically begin
+ *  and end a background task if the application transitions to the background.
+ *  This would be useful if you had a vital `OPOperation` whose execution *must* complete,
+ *  regardless of the activation state of the app. Some kinds network connections
+ *  may fall in to this category, for example.
+ */
 @interface OPBackgroundObserver : NSObject <OPOperationObserver>
 
 @end

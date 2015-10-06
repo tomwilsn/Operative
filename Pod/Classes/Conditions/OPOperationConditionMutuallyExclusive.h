@@ -19,13 +19,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
 #import "OPOperationCondition.h"
+
 
 @interface OPOperationConditionMutuallyExclusive : NSObject <OPOperationCondition>
 
-- (instancetype) initWithClass:(Class) cls;
++ (OPOperationConditionMutuallyExclusive *)mutuallyExclusiveWith:(Class)cls;
 
-+ (instancetype) mutuallyExclusiveWith:(Class) cls;
+- (instancetype)initWithClass:(Class)cls;
 
 @end

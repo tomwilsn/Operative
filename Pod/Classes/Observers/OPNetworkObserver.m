@@ -22,7 +22,9 @@
 #import "OPNetworkObserver.h"
 
 
-/// Essentially a cancellable `dispatch_after`.
+/**
+ *  Essentially a cancellable `dispatch_after`.
+ */
 @interface OPTimer : NSObject
 
 @property (assign, nonatomic, getter=isCancelled) BOOL cancelled;
@@ -37,7 +39,10 @@
 
 @end
 
-/// A singleton to manage a visual "reference count" on the network activity indicator.
+
+/**
+ *  A singleton to manage a visual "reference count" on the network activity indicator.
+ */
 @interface OPNetworkIndicatorController : NSObject
 
 + (OPNetworkIndicatorController *)sharedInstance;
@@ -55,10 +60,6 @@
 @end
 
 
-/**
- *  An `OPOperationObserver` that will cause the network activity indicator to appear
- *  as long as the `OPOperation` to which it is attached is executing.
- */
 @implementation OPNetworkObserver
 
 - (void)operationDidStart:(OPOperation *)operation

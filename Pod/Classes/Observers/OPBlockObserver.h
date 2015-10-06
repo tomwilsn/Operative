@@ -19,14 +19,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
 #import "OPOperationObserver.h"
 
+
+/**
+ *  The `OPBlockObserver` is a way to attach arbitrary blocks to significant
+ *  events in an `OPOperation`'s lifecycle.
+ */
 @interface OPBlockObserver : NSObject <OPOperationObserver>
 
-@property (nonatomic, copy) void (^startHandler)(OPOperation *operation);
-@property (nonatomic, copy) void (^produceHander)(OPOperation *operation, NSOperation *newOperation);
-@property (nonatomic, copy) void (^finishHandler)(OPOperation *operation, NSArray *errors);
+@property (copy, nonatomic) void (^startHandler)(OPOperation *operation);
 
-- (instancetype) initWithStartHandler:(void (^)(OPOperation *operation)) startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation)) produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+@property (copy, nonatomic) void (^produceHander)(OPOperation *operation, NSOperation *newOperation);
+
+@property (copy, nonatomic) void (^finishHandler)(OPOperation *operation, NSArray *errors);
+
+- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
+                      produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
+                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+
 @end

@@ -23,12 +23,14 @@
 #import "OPOperationCondition.h"
 #import "NSError+Operative.h"
 
+
 @implementation OPOperationConditionEvaluator
 
 + (void)evaluateConditions:(NSArray *)conditions
                  operation:(OPOperation *)operation
                 completion:(void (^)(NSArray *failures))completion;
 {
+    // Check conditions.
     dispatch_group_t conditionGroup = dispatch_group_create();
 
     NSMutableArray *results = [[NSMutableArray alloc] init];
@@ -60,7 +62,7 @@
         }];
 
         // If any of the conditions caused this operation to be cancelled, check for that
-        if (operation.isCancelled) {
+        if ([operation isCancelled]) {
             [failures addObject:[NSError errorWithCode:OPOperationErrorCodeConditionFailed]];
         }
 

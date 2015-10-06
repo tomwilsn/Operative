@@ -20,27 +20,19 @@
 // THE SOFTWARE.
 
 #import "OPOperationConditionMutuallyExclusive.h"
-#import "OPOperationCondition.h"
+
 
 @interface OPOperationConditionMutuallyExclusive ()
+
 @property (copy, nonatomic) Class cls;
+
 @end
 
 @implementation OPOperationConditionMutuallyExclusive
 
-+ (instancetype)mutuallyExclusiveWith:(Class)cls;
-{
-    return [[self alloc] initWithClass:cls];
-}
 
-- (instancetype)initWithClass:(Class)cls
-{
-    self = [super init];
-    if (self) {
-        _cls = cls;
-    }
-    return self;
-}
+#pragma mark - OPOperationCondition Protocol
+#pragma mark -
 
 - (NSString *)name
 {
@@ -57,9 +49,31 @@
     return nil;
 }
 
-- (void)evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
+- (void)evaluateConditionForOperation:(OPOperation *)operation
+                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
 {
     completion(OPOperationConditionResultStatusSatisfied, nil);
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
++ (OPOperationConditionMutuallyExclusive *)mutuallyExclusiveWith:(Class)cls
+{
+    return [[OPOperationConditionMutuallyExclusive alloc] initWithClass:cls];
+}
+
+- (instancetype)initWithClass:(Class)cls
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _cls = [cls copy];
+
+    return self;
 }
 
 @end

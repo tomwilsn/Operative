@@ -86,9 +86,15 @@
 #pragma mark - OPOperationObserver Protocol
 #pragma mark -
 
-- (void)operationDidStart:(OPOperation *)operation {}
+- (void)operationDidStart:(OPOperation *)operation
+{
+    // No-op
+}
 
-- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation {}
+- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
+{
+    // No-op
+}
 
 - (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
 {
