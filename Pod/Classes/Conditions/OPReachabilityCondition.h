@@ -19,8 +19,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-
 #import "OPOperationCondition.h"
 
 
@@ -32,6 +30,6 @@
  */
 @interface OPReachabilityCondition : NSObject <OPOperationCondition>
 
-- (instancetype)initWithHost:(NSURL *)host;
+- (instancetype)initWithHost:(NSURL *)host NS_DESIGNATED_INITIALIZER;
 
 @end

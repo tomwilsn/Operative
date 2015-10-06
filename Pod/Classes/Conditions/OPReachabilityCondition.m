@@ -26,7 +26,8 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 
 
-NSString *const kOPOperationHostKey = @"OperationHost";
+static NSString *const kOPOperationHostKey = @"OperationHost";
+
 
 @interface OPReachabilityController : NSObject
 
@@ -50,6 +51,8 @@ NSString *const kOPOperationHostKey = @"OperationHost";
 
 @property (copy, nonatomic) NSURL *host;
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end
 
 
@@ -57,23 +60,7 @@ NSString *const kOPOperationHostKey = @"OperationHost";
 @implementation OPReachabilityCondition
 
 
-#pragma mark - Lifecycle
-#pragma mark -
-
-- (instancetype)initWithHost:(NSURL *)host
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
-    _host = [host copy];
-    
-    return self;
-}
-
-
-#pragma mark - OPOperationCondition
+#pragma mark - OPOperationCondition Protocol
 #pragma mark -
 
 - (NSString *)name
@@ -109,11 +96,33 @@ NSString *const kOPOperationHostKey = @"OperationHost";
 }
 
 
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithHost:(NSURL *)host
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    _host = [host copy];
+    
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    return self;
+}
+
 @end
 
-
-#pragma mark - OPReachabilityController
-#pragma mark -
 
 @implementation OPReachabilityController
 
@@ -176,7 +185,6 @@ NSString *const kOPOperationHostKey = @"OperationHost";
     }
     
     _reachabilityQueue = dispatch_queue_create("Operative.Reachability", DISPATCH_QUEUE_SERIAL);
-    
     _reachabilityRefs = [[NSMutableDictionary alloc] init];
     
     return self;
