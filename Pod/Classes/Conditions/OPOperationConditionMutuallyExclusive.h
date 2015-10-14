@@ -26,6 +26,34 @@
 
 + (OPOperationConditionMutuallyExclusive *)mutuallyExclusiveWith:(Class)cls;
 
+/**
+ *  Class method that returns a mutually exclusive condition for a target
+ *  operation that may present an alert.
+ *
+ *  @return `OPOperationConditionMutuallyExclusive` object with class of type
+ *  `OPAlertPresentation`
+ *
+ *  @see OPAlertPresentation
+ */
++ (OPOperationConditionMutuallyExclusive *)alertPresentationExclusivity;
+
 - (instancetype)initWithClass:(Class)cls;
 
+@end
+
+/**
+ *  Provides a simple class for usage in defining exclusivity for a target that
+ *  may display an alert (via system, `UIAlertController`, `UIAlertView`, etc.)
+ *
+ *  When defining an operation with an alert view mutually exclusivity
+ *  condition, always use this class as opposed to `[UIAlertController class]`
+ *  or `[UIAlertView class]`.
+ *
+ *  For simplicity, `OPOperationConditionMutuallyExclusive` has a class method
+ *  `+alertPresentationExclusivity` which returns a mutually exclusive condition
+ *  setup with `[OPAlertPresentation class]`
+ *
+ *  @see alertPresentationExclusivity
+ */
+@interface OPAlertPresentation : NSObject
 @end

@@ -47,7 +47,6 @@
           handler:(void (^)(OPAlertOperation *))handler;
 {
     __weak __typeof__(self) weakSelf = self;
-    
     UIAlertAction *action = [UIAlertAction actionWithTitle:title style:style handler:^(UIAlertAction *action) {
         __typeof__(self) strongSelf = weakSelf;
         
@@ -130,7 +129,7 @@
 
     _alertController = [[UIAlertController alloc] init];
 
-    [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
+    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
     
     /**
      *  This operation modifies the view controller hierarchy.

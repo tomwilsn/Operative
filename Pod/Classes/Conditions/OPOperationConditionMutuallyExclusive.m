@@ -59,6 +59,11 @@
 #pragma mark - Lifecycle
 #pragma mark -
 
++ (OPOperationConditionMutuallyExclusive *)alertPresentationExclusivity
+{
+    return [OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[OPAlertPresentation class]];
+}
+
 + (OPOperationConditionMutuallyExclusive *)mutuallyExclusiveWith:(Class)cls
 {
     return [[OPOperationConditionMutuallyExclusive alloc] initWithClass:cls];
@@ -76,4 +81,10 @@
     return self;
 }
 
+@end
+
+
+#pragma mark - OPAlertPresentation
+
+@implementation OPAlertPresentation
 @end
