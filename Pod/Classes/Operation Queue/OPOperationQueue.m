@@ -25,94 +25,105 @@
 #import "OPExclusivityController.h"
 #import "OPOperationCondition.h"
 
+
 @implementation OPOperationQueue
 
-- (void) addOperation:(NSOperation *)operation
+- (void)addOperation:(NSOperation *)operation
 {
-    if ([operation isKindOfClass:[OPOperation class]])
-    {
-        OPOperation *opOperation = (OPOperation *) operation;
-        
-//        NSLog(@"Adding operation: %@", opOperation);
-        
-        id<OPOperationObserver> observer =
-            [[OPBlockObserver alloc] initWithStartHandler:nil
-                                           produceHandler:^(OPOperation *operation, NSOperation *newOperation) {
-                                               [self addOperation:newOperation];
-                                           } finishHandler:^(OPOperation *operation, NSArray *errors) {
-                                               [self.delegate operationQueue:self operationDidFinish:operation withErrors:errors];
-                                           }];
-        
+    if ([operation isKindOfClass:[OPOperation class]]) {
+        OPOperation *opOperation = (OPOperation *)operation;
+
+        // Set up a `OPBlockObserver` to invoke the `OPOperationQueueDelegate` method.
+        id <OPOperationObserver>observer = [[OPBlockObserver alloc] initWithStartHandler:nil
+                                                                          produceHandler:^(__unused OPOperation *operation, NSOperation *newOperation) {
+                                                                              [self addOperation:newOperation];
+                                                                          }
+                                                                           finishHandler:^(OPOperation *operation, NSArray *errors) {
+                                                                               if ([self delegate] && [self.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
+                                                                                   [self.delegate operationQueue:self operationDidFinish:operation withErrors:errors];
+                                                                               }
+                                                                           }];
+
         [opOperation addObserver:observer];
-        
+
         // Extract any dependencies needed by this operation
         NSMutableArray *dependencies = [[NSMutableArray alloc] init];
-        for (id<OPOperationCondition> condition in opOperation.conditions)
-        {
+        for (id <OPOperationCondition>condition in [opOperation conditions]) {
             NSOperation *dependency = [condition dependencyForOperation:opOperation];
-            if (dependency)
-            {
+            if (dependency) {
                 [dependencies addObject:dependency];
             }
         }
-        
-        for (NSOperation *dependency in dependencies)
-        {
+
+        for (NSOperation *dependency in dependencies) {
             [opOperation addDependency:dependency];
             [self addOperation:dependency];
         }
-        
+
         // With condition dependencies added, we can now see if this needs
         // dependencies to enforce mutual exclusivity.
         NSMutableArray *concurrencyCategories = [[NSMutableArray alloc] init];
-        for (id<OPOperationCondition> condition in opOperation.conditions)
-        {
-            if (condition.isMutuallyExclusive)
-            {
+        for (id <OPOperationCondition>condition in [opOperation conditions]) {
+            if (condition.isMutuallyExclusive) {
                 [concurrencyCategories addObject:condition.name];
             }
         }
-        
-        if (concurrencyCategories.count > 0)
-        {
+
+        if ([concurrencyCategories count] > 0) {
+            // Set up the mutual exclusivity dependencies.
             OPExclusivityController *exclusivityController = [OPExclusivityController sharedExclusivityController];
-            
             [exclusivityController addOperation:opOperation categories:concurrencyCategories];
-            
-            [opOperation addObserver:[[OPBlockObserver alloc] initWithStartHandler:nil produceHandler:nil finishHandler:^(OPOperation *operation, NSArray *errors) {
-                [exclusivityController removeOperation:opOperation categories:concurrencyCategories];
-            }]];
+
+            OPBlockObserver *blockObserver = [[OPBlockObserver alloc] initWithStartHandler:nil
+                                                                            produceHandler:nil
+                                                                             finishHandler:^(__unused OPOperation *operation, __unused NSArray *errors) {
+                                                                                 [exclusivityController removeOperation:opOperation categories:concurrencyCategories];
+                                                                             }];
+            [opOperation addObserver:blockObserver];
         }
-        
+
+        /**
+         *  Indicate to the operation that we've finished our extra work on it
+         *  and it's now it a state where it can proceed with evaluating conditions,
+         *  if appropriate.
+         */
         [opOperation willEnqueue];
     }
-    else
-    {
+    else {
+        /**
+         *  For regular `NSOperation`s, we'll manually call out to the queue's
+         *  delegate we don't want to just capture "operation" because that
+         *  would lead to the operation strongly referencing itself and that's
+         *  the pure definition of a memory leak.
+         */
         __weak __typeof__(self) weakSelf = self;
         __weak NSOperation *weakOperation = operation;
 
-        operation.completionBlock = ^(void) {
+        [operation setCompletionBlock:^(void) {
             __typeof__(self) strongSelf = weakSelf;
             NSOperation *strongOperation = weakOperation;
-            [weakSelf.delegate operationQueue:strongSelf operationDidFinish:strongOperation withErrors:@[]];
-        };
+            if ([strongSelf delegate] && [strongSelf.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
+                [strongSelf.delegate operationQueue:strongSelf operationDidFinish:strongOperation withErrors:@[]];
+            }
+        }];
     }
-    
+
     [self.delegate operationQueue:self willAddOperation:operation];
     [super addOperation:operation];
 }
 
-- (void) addOperations:(NSArray *)operations waitUntilFinished:(BOOL)wait
+- (void)addOperations:(NSArray *)operations waitUntilFinished:(BOOL)wait
 {
-    for (NSOperation *operation in operations)
-    {
+    /**
+     *  The base implementation of this method does not call `-addOperation:`,
+     *  so we'll call it ourselves.
+     */
+    for (NSOperation *operation in operations) {
         [self addOperation:operation];
     }
-    
-    if (wait)
-    {
-        for (NSOperation *operation in operations)
-        {
+
+    if (wait) {
+        for (NSOperation *operation in operations) {
             [operation waitUntilFinished];
         }
     }

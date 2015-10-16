@@ -1,4 +1,4 @@
-// OPBlockObserver.h
+// NSOperation+Operative.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,23 +19,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "OPOperationObserver.h"
+#import <Foundation/Foundation.h>
 
 
-/**
- *  The `OPBlockObserver` is a way to attach arbitrary blocks to significant
- *  events in an `OPOperation`'s lifecycle.
- */
-@interface OPBlockObserver : NSObject <OPOperationObserver>
+@interface NSOperation (Operative)
 
-@property (copy, nonatomic) void (^startHandler)(OPOperation *operation);
+- (void)addCompletionBlock:(void (^)(void))block;
 
-@property (copy, nonatomic) void (^produceHander)(OPOperation *operation, NSOperation *newOperation);
-
-@property (copy, nonatomic) void (^finishHandler)(OPOperation *operation, NSArray *errors);
-
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
-                      produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
-                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+- (void)addDependencies:(NSArray *)dependencies;
 
 @end

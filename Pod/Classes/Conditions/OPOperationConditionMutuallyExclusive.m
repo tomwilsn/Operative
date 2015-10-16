@@ -1,4 +1,4 @@
-// OPBlockObserver.m
+// OPOperationConditionMutuallyExclusive.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,52 +19,72 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "OPBlockObserver.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 
 
-@implementation OPBlockObserver
+@interface OPOperationConditionMutuallyExclusive ()
+
+@property (copy, nonatomic) Class cls;
+
+@end
+
+@implementation OPOperationConditionMutuallyExclusive
 
 
-#pragma mark - OPOperationObserver Protocol
+#pragma mark - OPOperationCondition Protocol
 #pragma mark -
 
-- (void)operationDidStart:(OPOperation *)operation
+- (NSString *)name
 {
-    if ([self startHandler]) {
-        self.startHandler(operation);
-    }
+    return [NSString stringWithFormat:@"MutuallyExclusive<%@>", NSStringFromClass(self.cls)];
 }
 
-- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
+- (BOOL)isMutuallyExclusive
 {
-    if ([self produceHander]) {
-        self.produceHander(operation, newOperation);
-    }
+    return YES;
 }
 
-- (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
+- (NSOperation *)dependencyForOperation:(OPOperation *)operation
 {
-    if ([self finishHandler]) {
-        self.finishHandler(operation, errors);
-    }
+    return nil;
+}
+
+- (void)evaluateConditionForOperation:(OPOperation *)operation
+                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
+{
+    completion(OPOperationConditionResultStatusSatisfied, nil);
 }
 
 
 #pragma mark - Lifecycle
 #pragma mark -
 
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
++ (OPOperationConditionMutuallyExclusive *)alertPresentationExclusivity
+{
+    return [OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[OPAlertPresentation class]];
+}
+
++ (OPOperationConditionMutuallyExclusive *)mutuallyExclusiveWith:(Class)cls
+{
+    return [[OPOperationConditionMutuallyExclusive alloc] initWithClass:cls];
+}
+
+- (instancetype)initWithClass:(Class)cls
 {
     self = [super init];
     if (!self) {
         return nil;
     }
 
-    _startHandler = [startHandler copy];
-    _produceHander = [produceHandler copy];
-    _finishHandler = [finishHandler copy];
+    _cls = [cls copy];
 
     return self;
 }
 
+@end
+
+
+#pragma mark - OPAlertPresentation
+
+@implementation OPAlertPresentation
 @end

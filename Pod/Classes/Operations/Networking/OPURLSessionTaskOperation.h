@@ -1,4 +1,4 @@
-// OPBlockObserver.h
+// OPURLSessionOperation.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,23 +19,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "OPOperationObserver.h"
+#import "OPOperation.h"
 
 
 /**
- *  The `OPBlockObserver` is a way to attach arbitrary blocks to significant
- *  events in an `OPOperation`'s lifecycle.
+ *  `OPURLSessionTaskOperation` is an `OPOperation` that lifts an `NSURLSessionTask`
+ *  into an operation.
+ *
+ *  Note that this operation does not participate in any of the delegate callbacks
+ *  of an `NSURLSession`, but instead uses Key-Value-Observing to know when the
+ *  task has been completed. It also does not get notified about any errors that
+ *  occurred during execution of the task.
+ *
+ *  - returns: An instance of an `OPURLSessionTaskOperation`
  */
-@interface OPBlockObserver : NSObject <OPOperationObserver>
+@interface OPURLSessionTaskOperation : OPOperation
 
-@property (copy, nonatomic) void (^startHandler)(OPOperation *operation);
-
-@property (copy, nonatomic) void (^produceHander)(OPOperation *operation, NSOperation *newOperation);
-
-@property (copy, nonatomic) void (^finishHandler)(OPOperation *operation, NSArray *errors);
-
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
-                      produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
-                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+- (instancetype)initWithTask:(NSURLSessionTask *)task NS_DESIGNATED_INITIALIZER;
 
 @end

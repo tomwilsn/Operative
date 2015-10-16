@@ -22,12 +22,31 @@
 #import <Foundation/Foundation.h>
 #import "OPOperation.h"
 
+
+/**
+ *  `OPExclusivityController` is a singleton to keep track of all the in-flight
+ *  `OPOperation` instances that have declared themselves as requiring mutual exclusivity.
+ *  We use a singleton because mutual exclusivity must be enforced across the entire
+ *  app, regardless of the `OPOperationQueue` on which an `OPOperation` was executed.
+ */
 @interface OPExclusivityController : NSObject
 
-+ (OPExclusivityController *) sharedExclusivityController;
++ (OPExclusivityController *)sharedExclusivityController;
 
-- (void) addOperation:(OPOperation *) operation categories:(NSArray *) categories;
-- (void) removeOperation:(OPOperation *) operation categories:(NSArray *) categories;
+/**
+ *  Registers an operation as being mutually exclusive
+ *
+ *  @param operation  OPOperation object which requires exclusivity
+ *  @param categories Array of strings describing the name of the category of exclusivity
+ */
+- (void)addOperation:(OPOperation *)operation categories:(NSArray *)categories;
 
+/**
+ *  Unregisters an operation from being mutually exclusive.
+ *
+ *  @param operation  OPOperation object which requires exclusivity
+ *  @param categories Array of strings describing the name of the category of exclusivity
+ */
+- (void)removeOperation:(OPOperation *)operation categories:(NSArray *)categories;
 
 @end

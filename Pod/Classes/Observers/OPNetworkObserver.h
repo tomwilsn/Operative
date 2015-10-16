@@ -1,4 +1,4 @@
-// OPBlockObserver.h
+// OPNetworkObserver.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,19 +23,11 @@
 
 
 /**
- *  The `OPBlockObserver` is a way to attach arbitrary blocks to significant
- *  events in an `OPOperation`'s lifecycle.
+ *  An `OPOperationObserver` that will cause the network activity indicator
+ *  to appear as long as the `OPOperation` to which it is attached is executing.
  */
-@interface OPBlockObserver : NSObject <OPOperationObserver>
+@interface OPNetworkObserver : NSObject <OPOperationObserver>
 
-@property (copy, nonatomic) void (^startHandler)(OPOperation *operation);
 
-@property (copy, nonatomic) void (^produceHander)(OPOperation *operation, NSOperation *newOperation);
-
-@property (copy, nonatomic) void (^finishHandler)(OPOperation *operation, NSArray *errors);
-
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
-                      produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
-                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
 
 @end

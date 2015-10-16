@@ -29,7 +29,7 @@ typedef NS_ENUM(NSUInteger, OPOperationConditionUserNotificationBehavior) {
     OPOperationConditionBehaviorReplace,
 };
 
-extern NSString * const kCurrentSetings;
+extern NSString * const kCurrentSettings;
 extern NSString * const kDesiredSettings;
 
 @interface OPOperationConditionUserNotification : NSObject <OPOperationCondition>

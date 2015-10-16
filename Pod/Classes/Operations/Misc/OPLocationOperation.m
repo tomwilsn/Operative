@@ -22,48 +22,45 @@
 
 #import "OPLocationOperation.h"
 
-#import "OPOperationConditionMututallyExclusive.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 #import "OPLocationCondition.h"
 
-@interface OPLocationOperation() <CLLocationManagerDelegate>
+@interface OPLocationOperation () <CLLocationManagerDelegate>
 
 @property (assign, nonatomic) CLLocationAccuracy accuracy;
+
 @property (strong, nonatomic) CLLocationManager *manager;
+
 @property (copy, nonatomic) void (^handler)(CLLocation *);
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 @end
 
+
 @implementation OPLocationOperation
 
-- (instancetype) initWithAccuracy:(CLLocationAccuracy) accuracy locationHandler:(void (^)(CLLocation *location))locationHandler
-{
-    self = [super init];
-    if (self)
-    {
-        _accuracy = accuracy;
-        self.handler = locationHandler;
-        
-        
-        [self addCondition:[[OPLocationCondition alloc] initWithUsage:OPLocationConditionWhenInUse]];
-        [self addCondition:[[OPOperationConditionMututallyExclusive alloc] initWithClass:[CLLocationManager class]]];
-        
-    }
-    return self;
-}
 
-- (void) execute
+#pragma mark - Overrides
+#pragma mark -
+
+- (void)execute
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        /**
+         *  `CLLocationManager` needs to be created on a thread with an active
+         *  run loop, so for simplicity we do this on the main queue.
+         */
         CLLocationManager *manager = [[CLLocationManager alloc] init];
-        manager.desiredAccuracy = self.accuracy;
-        manager.delegate = self;
+        [manager setDesiredAccuracy:[self accuracy]];
+        [manager setDelegate:self];
         [manager startUpdatingLocation];
-        
-        self.manager = manager;
+
+        [self setManager:manager];
     });
 }
 
-- (void) cancel
+- (void)cancel
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self stopLocationUpdates];
@@ -71,20 +68,21 @@
     });
 }
 
-- (void) stopLocationUpdates
+- (void)stopLocationUpdates
 {
     [self.manager stopUpdatingLocation];
-    self.manager = nil;
+    [self setManager:nil];
 }
 
-#pragma mark - CLLocationManagerDelegate
 
-- (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+#pragma mark - CLLocationManagerDelegate
+#pragma mark -
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     [locations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         CLLocation *location = obj;
-        if (location.horizontalAccuracy < self.accuracy)
-        {
+        if (location.horizontalAccuracy < [self accuracy]) {
             [self stopLocationUpdates];
             self.handler(location);
             [self finish];
@@ -94,10 +92,41 @@
     }];
 }
 
-- (void) locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     [self stopLocationUpdates];
     [self finishWithError:error];
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithAccuracy:(CLLocationAccuracy)accuracy
+                 locationHandler:(void (^)(CLLocation *location))locationHandler
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _accuracy = accuracy;
+    _handler = [locationHandler copy];
+
+    [self addCondition:[[OPLocationCondition alloc] initWithUsage:OPLocationConditionWhenInUse]];
+    [self addCondition:[[OPOperationConditionMutuallyExclusive alloc] initWithClass:[CLLocationManager class]]];
+
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    return self;
 }
 
 @end

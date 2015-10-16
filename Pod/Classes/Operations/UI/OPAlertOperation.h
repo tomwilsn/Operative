@@ -22,15 +22,21 @@
 #if TARGET_OS_IPHONE
 
 #import "OPOperation.h"
-@import UIKit;
+
+#import <UIKit/UIKit.h>
+
 
 @interface OPAlertOperation : OPOperation
 
+- (instancetype)initWithPresentationContext:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
+
 @property (copy, nonatomic) NSString *title;
+
 @property (copy, nonatomic) NSString *message;
 
-- (instancetype) initWithPresentationContext:(UIViewController *) viewController;
-- (void) addAction:(NSString *) title style:(UIAlertActionStyle) style handler:(void (^)(OPAlertOperation *))handler;
+- (void)addAction:(NSString *)title
+            style:(UIAlertActionStyle)style
+          handler:(void (^)(OPAlertOperation *))handler;
 
 @end
 

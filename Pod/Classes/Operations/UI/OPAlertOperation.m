@@ -22,98 +22,133 @@
 #if TARGET_OS_IPHONE
 
 #import "OPAlertOperation.h"
-#import "OPOperationConditionMututallyExclusive.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 
 
-@interface OPAlertOperation()
+@interface OPAlertOperation ()
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 @property (strong, nonatomic) UIAlertController *alertController;
+
 @property (strong, nonatomic) UIViewController *presentationContext;
 
 @end
 
+
 @implementation OPAlertOperation
 
 
-- (NSString *) title
-{
-    return _alertController.title;
-}
+#pragma mark - Add Action
+#pragma mark -
 
-- (void) setTitle:(NSString *)title
-{
-    _alertController.title = title;
-}
-
-- (NSString *) message
-{
-    return _alertController.message;
-}
-
-- (void) setMessage:(NSString *)message
-{
-    _alertController.message = message;
-}
-
-- (instancetype) initWithPresentationContext:(UIViewController *)viewController
-{
-    self = [super init];
-    
-    if (self)
-    {
-        self.presentationContext = viewController ? viewController : [UIApplication sharedApplication].keyWindow.rootViewController;
-        
-        _alertController = [[UIAlertController alloc] init];
-        
-        
-        [self addCondition:[OPOperationConditionMututallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
-
-        [self addCondition:[OPOperationConditionMututallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
-    }
-    return self;
-}
-
-- (void) addAction:(NSString *) title style:(UIAlertActionStyle) style handler:(void (^)(OPAlertOperation *))handler;
+- (void)addAction:(NSString *)title
+            style:(UIAlertActionStyle)style
+          handler:(void (^)(OPAlertOperation *))handler;
 {
     __weak __typeof__(self) weakSelf = self;
-
     UIAlertAction *action = [UIAlertAction actionWithTitle:title style:style handler:^(UIAlertAction *action) {
         __typeof__(self) strongSelf = weakSelf;
         
-        if (handler) handler(strongSelf);
+        if (handler) {
+            handler(strongSelf);
+        }
         
         [weakSelf finish];
     }];
     
-    [_alertController addAction:action];
+    [self.alertController addAction:action];
 }
 
-#pragma mark - OPOperation Overrides
 
-- (void) execute
+#pragma mark - Overrides
+#pragma mark -
+
+- (void)execute
 {
-    if (!_presentationContext)
-    {
+    if (![self presentationContext]) {
         [self finish];
         return;
     }
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.alertController.actions.count == 0) {
+        if ([self.alertController.actions count] == 0) {
             [self addAction:@"OK" style:UIAlertActionStyleDefault handler:nil];
         }
-        
-        [_presentationContext presentViewController:_alertController animated:YES completion:nil];
+
+        [self.presentationContext presentViewController:[self alertController] animated:YES completion:nil];
     });
 }
 
-- (void) cancel
+- (void)cancel
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_alertController dismissViewControllerAnimated:YES completion:^{
+        [self.alertController dismissViewControllerAnimated:YES completion:^{
             [super cancel];
         }];
     });
+}
+
+
+#pragma mark - Getters / Setters
+#pragma mark -
+
+- (NSString *)title
+{
+    return [self.alertController title];
+}
+
+- (void)setTitle:(NSString *)title
+{
+    [self.alertController setTitle:[title copy]];
+}
+
+- (NSString *)message
+{
+    return [self.alertController message];
+}
+
+- (void)setMessage:(NSString *)message
+{
+    [self.alertController setMessage:[message copy]];
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithPresentationContext:(UIViewController *)viewController
+{
+    self = [super init];
+
+    if (!self) {
+        return nil;
+    }
+
+    _presentationContext = viewController ?: [[[UIApplication sharedApplication] keyWindow] rootViewController];
+
+    _alertController = [[UIAlertController alloc] init];
+
+    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
+    
+    /**
+     *  This operation modifies the view controller hierarchy.
+     *  Doing this while other such operations are executing can lead to
+     *  inconsistencies in UIKit. So, let's make them mutally exclusive.
+     */
+    [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
+
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    return self;
 }
 
 @end

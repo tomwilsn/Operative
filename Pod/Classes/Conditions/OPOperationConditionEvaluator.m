@@ -21,50 +21,52 @@
 
 #import "OPOperationConditionEvaluator.h"
 #import "OPOperationCondition.h"
-#import "NSError+OPOperationErrors.h"
+#import "NSError+Operative.h"
+
 
 @implementation OPOperationConditionEvaluator
 
-+ (void) evaluateConditions:(NSArray *) conditions operation:(OPOperation *) operation completion:(void (^)(NSArray *failures))completion;
++ (void)evaluateConditions:(NSArray *)conditions
+                 operation:(OPOperation *)operation
+                completion:(void (^)(NSArray *failures))completion;
 {
+    // Check conditions.
     dispatch_group_t conditionGroup = dispatch_group_create();
-    
-    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:conditions.count];
+
+    NSMutableArray *results = [[NSMutableArray alloc] init];
     [conditions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [results addObject:[NSNull null]];
     }];
-    
+
     // Ask each condition to evaluate and store its result in the "results" array.
     [conditions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        id<OPOperationCondition> condition = obj;
+        id <OPOperationCondition>condition = obj;
 
         dispatch_group_enter(conditionGroup);
-        [condition evaluateConditionForOperation:operation completion:^(id result) {
-            results[idx] = result ? result : [NSNull null];
+        [condition evaluateConditionForOperation:operation completion:^(OPOperationConditionResultStatus result, NSError *error) {
+            if (error) {
+                results[idx] = error;
+            }
             dispatch_group_leave(conditionGroup);
         }];
     }];
-    
+
     // After all the conditions have evaluated, this block will execute
     dispatch_group_notify(conditionGroup, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
-        
         // Aggregate the errors that occurred, in order.
         NSMutableArray *failures = [[NSMutableArray alloc] init];
         [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            if ([obj isKindOfClass:[NSError class]])
-            {
+            if ([obj isKindOfClass:[NSError class]]) {
                 [failures addObject:obj];
             }
         }];
-        
+
         // If any of the conditions caused this operation to be cancelled, check for that
-        if (operation.isCancelled)
-        {
+        if ([operation isCancelled]) {
             [failures addObject:[NSError errorWithCode:OPOperationErrorCodeConditionFailed]];
         }
-        
+
         completion(failures);
-        
     });
 }
 

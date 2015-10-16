@@ -21,51 +21,63 @@
 
 #import "OPDelayOperation.h"
 
-@interface OPDelayOperation()
+
+@interface OPDelayOperation ()
 
 @property (assign, nonatomic) NSTimeInterval delay;
 
 @end
 
+
 @implementation OPDelayOperation
 
 
-- (instancetype) initWithDate:(NSDate *) date
-{
-    return [self initWithTimeInterval:[date timeIntervalSinceNow]];
-}
+#pragma mark - Overrides
+#pragma mark -
 
-- (instancetype) initWithTimeInterval:(NSTimeInterval) interval
+- (void)execute
 {
-    self = [super init];
-    if (self)
-    {
-        _delay = interval;
-    }
-    return self;
-}
-
-- (void) execute
-{
-    if (self.delay < 0)
-    {
+    if ([self delay] < 0) {
         [self finish];
         return;
     }
-    
-    dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, self.delay * NSEC_PER_SEC);
-    
+
+    dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, (int64_t)([self delay] * NSEC_PER_SEC));
+
     dispatch_after(when, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
-        if (self.isExecuting)
-        {
+        // If we were cancelled, then -finish has already been called.
+        if (![self isCancelled]) {
             [self finish];
         }
     });
 }
 
-- (void) cancel
+- (void)cancel
 {
-    [self finish]; // cancelling a delay just removes the delay :-)
+    [super cancel];
+    // Cancelling the operation means we don't want to wait anymore.
+    [self finish];
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithDate:(NSDate *)date
+{
+    return [self initWithTimeInterval:[date timeIntervalSinceNow]];
+}
+
+- (instancetype)initWithTimeInterval:(NSTimeInterval)interval
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _delay = interval;
+
+    return self;
 }
 
 @end

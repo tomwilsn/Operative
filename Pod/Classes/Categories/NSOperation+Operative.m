@@ -1,4 +1,4 @@
-// OPBlockObserver.m
+// NSOperation+Operative.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,52 +19,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "OPBlockObserver.h"
+#import "NSOperation+Operative.h"
 
 
-@implementation OPBlockObserver
+@implementation NSOperation (Operative)
 
-
-#pragma mark - OPOperationObserver Protocol
-#pragma mark -
-
-- (void)operationDidStart:(OPOperation *)operation
+- (void)addCompletionBlock:(void (^)(void))block
 {
-    if ([self startHandler]) {
-        self.startHandler(operation);
+    // If we already have a completion block
+    if ([self completionBlock]) {
+        // Construct a new block that calls the existing block
+        void (^existing)(void) = [self.completionBlock copy];
+
+        self.completionBlock = ^{
+            existing();
+            block();
+        };
+    } else {
+        [self setCompletionBlock:block];
     }
 }
 
-- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
+- (void)addDependencies:(NSArray *)dependencies
 {
-    if ([self produceHander]) {
-        self.produceHander(operation, newOperation);
+    for (NSOperation *dependency in dependencies) {
+        [self addDependency:dependency];
     }
-}
-
-- (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
-{
-    if ([self finishHandler]) {
-        self.finishHandler(operation, errors);
-    }
-}
-
-
-#pragma mark - Lifecycle
-#pragma mark -
-
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    _startHandler = [startHandler copy];
-    _produceHander = [produceHandler copy];
-    _finishHandler = [finishHandler copy];
-
-    return self;
 }
 
 @end

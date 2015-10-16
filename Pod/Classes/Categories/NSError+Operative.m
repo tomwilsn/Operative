@@ -1,4 +1,4 @@
-// OPBlockObserver.m
+// NSError+Operative.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,52 +19,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "OPBlockObserver.h"
+#import "NSError+Operative.h"
 
 
-@implementation OPBlockObserver
+NSString *const kOPOperationErrorDomain = @"OPOperationErrors";
+NSString *const kOPOperationConditionKey = @"OPOperationCondition";
 
 
-#pragma mark - OPOperationObserver Protocol
-#pragma mark -
+@implementation NSError (Operative)
 
-- (void)operationDidStart:(OPOperation *)operation
++ (instancetype)errorWithCode:(OPOperationErrorCode)code
 {
-    if ([self startHandler]) {
-        self.startHandler(operation);
-    }
+    return [NSError errorWithCode:code userInfo:nil];
 }
 
-- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
++ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo
 {
-    if ([self produceHander]) {
-        self.produceHander(operation, newOperation);
-    }
-}
-
-- (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
-{
-    if ([self finishHandler]) {
-        self.finishHandler(operation, errors);
-    }
-}
-
-
-#pragma mark - Lifecycle
-#pragma mark -
-
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    _startHandler = [startHandler copy];
-    _produceHander = [produceHandler copy];
-    _finishHandler = [finishHandler copy];
-
-    return self;
+    return [NSError errorWithDomain:kOPOperationErrorDomain code:code userInfo:userInfo];
 }
 
 @end

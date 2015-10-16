@@ -22,84 +22,103 @@
 #import "OPExclusivityController.h"
 
 @interface OPExclusivityController()
-{
-    dispatch_queue_t serialQueue;
-}
 
 @property (strong, nonatomic) NSMutableDictionary *operations;
+
+#if OS_OBJECT_USE_OBJC
+@property (strong, nonatomic) dispatch_queue_t serialQueue;
+#else
+@property (assign, nonatomic) dispatch_queue_t serialQueue;
+#endif
 
 @end
 
 @implementation OPExclusivityController
 
-+ (instancetype) sharedExclusivityController {
-    static id _sharedInstance = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _sharedInstance = [[self alloc] init];
-    });
-    return _sharedInstance;
-}
 
-- (instancetype) init
-{
-    self = [super init];
-    if (self)
-    {
-        serialQueue = dispatch_queue_create("OPOperations.ExclusivityController", DISPATCH_QUEUE_SERIAL);
-        _operations = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
+#pragma mark - Add & Remove Operations
+#pragma mark -
 
-- (void) addOperation:(OPOperation *) operation categories:(NSArray *) categories
+- (void)addOperation:(OPOperation *)operation categories:(NSArray *)categories
 {
-    dispatch_sync(serialQueue, ^{
-        for (NSString *category in categories)
-        {
+    dispatch_sync([self serialQueue], ^{
+        for (NSString *category in categories) {
             [self noqueue_addOperation:operation category:category];
         }
     });
 }
 
-- (void) removeOperation:(OPOperation *) operation categories:(NSArray *) categories
+
+- (void)removeOperation:(OPOperation *)operation categories:(NSArray *)categories
 {
-    dispatch_sync(serialQueue, ^{
-        for (NSString *category in categories)
-        {
+    dispatch_sync([self serialQueue], ^{
+        for (NSString *category in categories) {
             [self noqueue_removeOperation:operation category:category];
         }
     });
 }
 
-#pragma mark Operation Management
 
-- (void) noqueue_addOperation:(OPOperation *) operation category:(NSString *) category
+#pragma mark - Operation Management
+#pragma mark -
+
+- (void)noqueue_addOperation:(OPOperation *)operation category:(NSString *)category
 {
-    NSMutableArray *operationsWithThisCategory = _operations[category];
-    if (!operationsWithThisCategory)
-    {
-        operationsWithThisCategory = [[NSMutableArray alloc] init];
-        _operations[category] = operationsWithThisCategory;
+    NSArray *operationsWithThisCategory = self.operations[category] ?: @[];
+
+    if ([operationsWithThisCategory count]) {
+        OPOperation *op = [operationsWithThisCategory lastObject];
+        [operation addDependency:op];
     }
-    else if (operationsWithThisCategory.count > 0)
-    {
-        OPOperation *last = operationsWithThisCategory.lastObject;
-        [operation addDependency:last];
-    }
-    
-    [operationsWithThisCategory addObject:operation];
+
+    operationsWithThisCategory = [operationsWithThisCategory arrayByAddingObject:operation];
+
+    self.operations[category] = operationsWithThisCategory;
 }
 
-- (void) noqueue_removeOperation:(OPOperation *) operation category:(NSString *) category
+- (void)noqueue_removeOperation:(OPOperation *)operation category:(NSString *)category
 {
-    NSMutableArray *operationsWithThisCategory = _operations[category];
+    if (!self.operations[category]) {
+        return;
+    }
+
+    NSArray *operationsWithThisCategory = self.operations[category];
 
     NSUInteger index = [operationsWithThisCategory indexOfObject:operation];
-    if (index != NSNotFound)
-    {
-        [operationsWithThisCategory removeObjectAtIndex:index];
+    if (index != NSNotFound) {
+        NSMutableArray *mutableArray = [operationsWithThisCategory mutableCopy];
+        [mutableArray removeObjectAtIndex:index];
+        operationsWithThisCategory = [NSArray arrayWithArray:mutableArray];
+        self.operations[category] = operationsWithThisCategory;
     }
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
++ (OPExclusivityController *)sharedExclusivityController
+{
+    static OPExclusivityController *_sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[OPExclusivityController alloc] init];
+    });
+
+    return _sharedInstance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _serialQueue = dispatch_queue_create("Operative.ExclusivityController", DISPATCH_QUEUE_SERIAL);
+    _operations = [[NSMutableDictionary alloc] init];
+
+    return self;
 }
 
 @end

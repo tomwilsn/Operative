@@ -19,11 +19,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
 #import "OPOperation.h"
+
 
 @interface OPOperationConditionEvaluator : NSObject
 
-+ (void) evaluateConditions:(NSArray *) conditions operation:(OPOperation *) operation completion:(void (^)(NSArray *failures))completion;
++ (void)evaluateConditions:(NSArray *)conditions
+                 operation:(OPOperation *)operation
+                completion:(void (^)(NSArray *failures))completion;
 
 @end

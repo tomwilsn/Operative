@@ -19,52 +19,80 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 #import "OPTimeoutObserver.h"
 #import "OPOperation.h"
-#import "NSError+OPOperationErrors.h"
+#import "NSError+Operative.h"
 
-NSString * const kTimeoutKey = @"Timeout";
 
-@interface OPTimeoutObserver()
+static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
+
+
+@interface OPTimeoutObserver ()
 
 @property (assign, nonatomic) NSTimeInterval timeout;
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end
+
 
 @implementation OPTimeoutObserver
 
-- (instancetype) initWithTimeout:(NSTimeInterval) timeout;
-{
-    self = [super init];
-    if (self)
-    {
-        _timeout = timeout;
-    }
-    return self;
-}
+#pragma mark - OPOperationObserver Protocol
+#pragma mark -
 
-- (void) operationDidStart:(OPOperation *)operation
+- (void)operationDidStart:(OPOperation *)operation
 {
-    dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, _timeout * NSEC_PER_SEC);
-    
+    // When the operation starts, queue up a block to cause it to time out.
+    dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, (int64_t)([self timeout] * NSEC_PER_SEC));
+
     dispatch_after(when, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
-        if (!operation.isFinished && !operation.isCancelled)
-        {
-            NSError *error = [NSError errorWithCode:OPOperationErrorCodeExecutionFailed userInfo:@{
-                                                                                                   kTimeoutKey: @(self.timeout)
-                                                                                                   }];
+        /**
+         *  Cancel the operation if it hasn't finished and hasn't already
+         *  been cancelled.
+         */
+        if (![operation isFinished] && ![operation isCancelled]) {
+            NSDictionary *userInfo = @{ kOPTimeoutObserverErrorKey : @(([self timeout])) };
+            NSError *error = [NSError errorWithCode:OPOperationErrorCodeExecutionFailed userInfo:userInfo];
             [operation cancelWithError:error];
         }
     });
 }
 
-- (void) operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
+- (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
 {
+    // No-op
 }
 
-- (void) operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
+- (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
 {
+    // No-op
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithTimeout:(NSTimeInterval)timeout;
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+
+    _timeout = timeout;
+
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    return self;
 }
 
 @end

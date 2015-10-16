@@ -19,13 +19,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Operative/Operative.h>
+#import "OPOperation.h"
 
+
+/**
+ *  A subclass of `OPOperation` that executes zero or more operations as part
+ *  of its own execution. This class of operation is very useful for abstracting
+ *  several smaller operations into a larger operation.
+ *
+ *  Additionally, `OPGroupOperation`s are useful if you establish a chain of
+ *  dependencies, but part of the chain may "loop". For example, if you have an
+ *  operation that requires the user to be authenticated, you may consider
+ *  putting the "login" operation inside a group operation. That way,
+ *  the "login" operation may produce subsequent operations
+ *  (still within the outer `OPGroupOperation`) that will all be executed before
+ *  the rest of the operations in the initial chain of operations.
+ *
+ *  - returns: An instance of `OPGroupOperation
+ */
 @interface OPGroupOperation : OPOperation
 
-- (instancetype) initWithOperations:(NSArray *) operations;
+- (instancetype)initWithOperations:(NSArray *)operations;
 
-- (void) addOperation:(NSOperation *) operation;
-- (void) operationDidFinish:(NSOperation *) operation withErrors:(NSArray *) errors;
+/**
+ *  Adds an operation to the group after instantiation
+ *
+ *  @param operation Operation to add to the group
+ */
+- (void)addOperation:(NSOperation *)operation;
+
+/**
+ *  Note that some part of execution has produced an error.
+ *  Errors aggregated through this method will be included in the final array
+ *  of errors reported to observers and to the `-finished:` method.
+ *
+ *  @param error `NSError` to be aggregated
+ */
+- (void)aggregateError:(NSError *)error;
+
+/**
+ *  Method called upon finish of an operation within the group
+ *  To be overriden by subclass of `OPGroupOperation`.
+ *
+ *  @param operation Operation that did finish.
+ *  @param errors    Array of `NSErrors` during execution of operation or nil.
+ */
+- (void)operationDidFinish:(NSOperation *)operation withErrors:(NSArray *)errors;
 
 @end

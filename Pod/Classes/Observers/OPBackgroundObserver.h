@@ -1,4 +1,4 @@
-// OPBlockObserver.h
+// OPBackgroundObserver.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,23 +19,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import <Foundation/Foundation.h>
+
 #import "OPOperationObserver.h"
 
 
 /**
- *  The `OPBlockObserver` is a way to attach arbitrary blocks to significant
- *  events in an `OPOperation`'s lifecycle.
+ *  `OPBackgroundObserver` is an `OPOperationObserver` that will automatically begin
+ *  and end a background task if the application transitions to the background.
+ *  This would be useful if you had a vital `OPOperation` whose execution *must* complete,
+ *  regardless of the activation state of the app. Some kinds network connections
+ *  may fall in to this category, for example.
  */
-@interface OPBlockObserver : NSObject <OPOperationObserver>
-
-@property (copy, nonatomic) void (^startHandler)(OPOperation *operation);
-
-@property (copy, nonatomic) void (^produceHander)(OPOperation *operation, NSOperation *newOperation);
-
-@property (copy, nonatomic) void (^finishHandler)(OPOperation *operation, NSArray *errors);
-
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
-                      produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
-                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+@interface OPBackgroundObserver : NSObject <OPOperationObserver>
 
 @end
