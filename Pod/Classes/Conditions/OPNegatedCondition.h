@@ -24,8 +24,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const kOPOperationNegatedConditionKey;
-
 
 /**
  *  A simple condition that negates the evaluation of another condition.

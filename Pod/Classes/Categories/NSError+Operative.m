@@ -24,6 +24,7 @@
 
 NSString *const kOPOperationErrorDomain = @"OPOperationErrors";
 NSString *const kOPOperationConditionKey = @"OPOperationCondition";
+NSString *const kOPOperationNegatedConditionKey = @"OPOperationNegatedCondition";
 
 
 @implementation NSError (Operative)

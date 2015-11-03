@@ -23,9 +23,6 @@
 #import "NSError+Operative.h"
 
 
-NSString *const kOPOperationNegatedConditionKey = @"OPOperationNegatedCondition";
-
-
 @interface OPNegatedCondition ()
 
 /**
