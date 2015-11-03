@@ -1,4 +1,4 @@
-// OPSilentCondition.h
+// OPNegatedCondition.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,22 +24,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- *  A simple condition that causes another condition to not enqueue its
- *  dependency. This is useful (for example) when you want to verify that you
- *  have access to the user's location, but you do not want to prompt them for
- *  permission if you do not already have it.
- */
-@interface OPSilentCondition : NSObject <OPOperationCondition>
+extern NSString *const kOPOperationNegatedConditionKey;
+
 
 /**
- *  Initializes an `OPSilentCondition` object with the provided condition.
+ *  A simple condition that negates the evaluation of another condition.
+ *  This is useful (for example) if you want to only execute an operation if the
+ *  network is NOT reachable.
+ */
+@interface OPNegatedCondition : NSObject <OPOperationCondition>
+
+/**
+ *  Initializes an `OPNegatedCondition` object with the provided condition.
  *
  *  This is the designated initializer.
  *
- *  @param condition The condition which should be silent.
+ *  @param condition The condition which should be negated.
  *
- *  @return The newly-initialized `OPSilentCondition`
+ *  @return The newly-initialized `OPNegatedCondition`
  */
 - (instancetype)initWithCondition:(id <OPOperationCondition>)condition NS_DESIGNATED_INITIALIZER;
 
