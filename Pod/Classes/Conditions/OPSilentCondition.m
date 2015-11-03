@@ -57,9 +57,10 @@
 
 - (instancetype)init
 {
-    @throw [NSException exceptionWithName:[NSString stringWithFormat:@"Method Unavailable"]
-                                   reason:[NSString stringWithFormat:@"%@ not implemented", NSStringFromSelector(_cmd)]
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"%@ not implemented, use -initWithCondition: instead", NSStringFromSelector(_cmd)]
                                  userInfo:@{ @"file": @(__FILE__), @"line": @(__LINE__) }];
+    return nil;
 }
 
 
