@@ -71,7 +71,12 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
                     [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
                 }
                 @catch (NSException *__unused exception) {}
-                [self finish];
+                
+                if (_task.error) {
+                    [self finishWithError:_task.error];
+                } else {
+                    [self finish];
+                }
             }
         }
     } else {
