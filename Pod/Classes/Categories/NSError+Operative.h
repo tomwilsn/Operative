@@ -24,6 +24,7 @@
 
 extern NSString *const kOPOperationErrorDomain;
 extern NSString *const kOPOperationConditionKey;
+extern NSString *const kOPOperationNegatedConditionKey;
 
 typedef NS_ENUM(NSUInteger, OPOperationErrorCode) {
     OPOperationErrorCodeConditionFailed = 1,
