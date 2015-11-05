@@ -32,15 +32,19 @@
 {
     if ([operation isKindOfClass:[OPOperation class]]) {
         OPOperation *opOperation = (OPOperation *)operation;
-
+        
+        __weak __typeof__(self) weakSelf = self;
+        
         // Set up a `OPBlockObserver` to invoke the `OPOperationQueueDelegate` method.
         id <OPOperationObserver>observer = [[OPBlockObserver alloc] initWithStartHandler:nil
                                                                           produceHandler:^(__unused OPOperation *operation, NSOperation *newOperation) {
-                                                                              [self addOperation:newOperation];
+                                                                              [weakSelf addOperation:newOperation];
                                                                           }
                                                                            finishHandler:^(OPOperation *operation, NSArray *errors) {
-                                                                               if ([self delegate] && [self.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
-                                                                                   [self.delegate operationQueue:self operationDidFinish:operation withErrors:errors];
+                                                                               __strong __typeof__(self) strongSelf = weakSelf;
+                                                                               
+                                                                               if ([strongSelf delegate] && [strongSelf.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
+                                                                                   [strongSelf.delegate operationQueue:strongSelf operationDidFinish:operation withErrors:errors];
                                                                                }
                                                                            }];
 
@@ -76,8 +80,8 @@
 
             OPBlockObserver *blockObserver = [[OPBlockObserver alloc] initWithStartHandler:nil
                                                                             produceHandler:nil
-                                                                             finishHandler:^(__unused OPOperation *operation, __unused NSArray *errors) {
-                                                                                 [exclusivityController removeOperation:opOperation categories:concurrencyCategories];
+                                                                             finishHandler:^(OPOperation *operation, __unused NSArray *errors) {
+                                                                                 [exclusivityController removeOperation:operation categories:concurrencyCategories];
                                                                              }];
             [opOperation addObserver:blockObserver];
         }
