@@ -30,6 +30,9 @@
 
 @implementation OPOperationConditionMutuallyExclusive
 
+- (NSString *)debugDescription {
+    return [NSString stringWithFormat:@"%@ %@", [super debugDescription], [self name]];
+}
 
 #pragma mark - OPOperationCondition Protocol
 #pragma mark -
