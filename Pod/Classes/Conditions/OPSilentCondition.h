@@ -1,4 +1,4 @@
-// NSError+Operative.m
+// OPSilentCondition.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,24 +19,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSError+Operative.h"
+#import "OPOperationCondition.h"
 
 
-NSString *const kOPOperationErrorDomain = @"OPOperationErrors";
-NSString *const kOPOperationConditionKey = @"OPOperationCondition";
-NSString *const kOPOperationNegatedConditionKey = @"OPOperationNegatedCondition";
+NS_ASSUME_NONNULL_BEGIN
 
+/**
+ *  A simple condition that causes another condition to not enqueue its
+ *  dependency. This is useful (for example) when you want to verify that you
+ *  have access to the user's location, but you do not want to prompt them for
+ *  permission if you do not already have it.
+ */
+@interface OPSilentCondition : NSObject <OPOperationCondition>
 
-@implementation NSError (Operative)
+/**
+ *  Initializes an `OPSilentCondition` object with the provided condition.
+ *
+ *  This is the designated initializer.
+ *
+ *  @param condition The condition which should be silent.
+ *
+ *  @return The newly-initialized `OPSilentCondition`
+ */
+- (instancetype)initWithCondition:(id <OPOperationCondition>)condition NS_DESIGNATED_INITIALIZER;
 
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code
-{
-    return [NSError errorWithCode:code userInfo:nil];
-}
-
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo
-{
-    return [NSError errorWithDomain:kOPOperationErrorDomain code:code userInfo:userInfo];
-}
+/**
+ *  Unused `-init` method. Do not use, will throw an exception.
+ *
+ *  @return Nothing returned, throws an exception if used.
+ */
+- (instancetype)init NS_UNAVAILABLE;
 
 @end
+
+NS_ASSUME_NONNULL_END

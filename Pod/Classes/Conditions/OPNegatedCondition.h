@@ -1,4 +1,4 @@
-// NSError+Operative.m
+// OPNegatedCondition.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,24 +19,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "NSError+Operative.h"
+#import "OPOperationCondition.h"
 
 
-NSString *const kOPOperationErrorDomain = @"OPOperationErrors";
-NSString *const kOPOperationConditionKey = @"OPOperationCondition";
-NSString *const kOPOperationNegatedConditionKey = @"OPOperationNegatedCondition";
+NS_ASSUME_NONNULL_BEGIN
 
 
-@implementation NSError (Operative)
+/**
+ *  A simple condition that negates the evaluation of another condition.
+ *  This is useful (for example) if you want to only execute an operation if the
+ *  network is NOT reachable.
+ */
+@interface OPNegatedCondition : NSObject <OPOperationCondition>
 
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code
-{
-    return [NSError errorWithCode:code userInfo:nil];
-}
+/**
+ *  Initializes an `OPNegatedCondition` object with the provided condition.
+ *
+ *  This is the designated initializer.
+ *
+ *  @param condition The condition which should be negated.
+ *
+ *  @return The newly-initialized `OPNegatedCondition`
+ */
+- (instancetype)initWithCondition:(id <OPOperationCondition>)condition NS_DESIGNATED_INITIALIZER;
 
-+ (instancetype)errorWithCode:(OPOperationErrorCode)code userInfo:(NSDictionary *)userInfo
-{
-    return [NSError errorWithDomain:kOPOperationErrorDomain code:code userInfo:userInfo];
-}
+/**
+ *  Unused `-init` method. Do not use, will throw an exception.
+ *
+ *  @return Nothing returned, throws an exception if used.
+ */
+- (instancetype)init NS_UNAVAILABLE;
 
 @end
+
+NS_ASSUME_NONNULL_END
