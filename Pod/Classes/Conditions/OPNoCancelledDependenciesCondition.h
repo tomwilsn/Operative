@@ -1,4 +1,4 @@
-// Operative.h
+// OPNoCancelledDependenciesCondition.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,35 +19,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef Pods_Operative_h
-#define Pods_Operative_h
+#import "OPOperationCondition.h"
 
-// Core
-#import "OPOperation.h"
-#import "OPOperationQueue.h"
-#import "OPOperationObserver.h"
+/**
+ *  A condition that specifies that every dependency must have succeeded.
+ *  If any dependency was cancelled, the target operation will be cancelled as
+ *  well.
+ */
+@interface OPNoCancelledDependenciesCondition : NSObject <OPOperationCondition>
 
-// Operations
-#import "OPBlockOperation.h"
-#import "OPAlertOperation.h"
-#import "OPURLSessionTaskOperation.h"
-#import "OPGroupOperation.h"
-#import "OPLocationOperation.h"
-#import "OPDelayOperation.h"
-
-// Conditions
-#import "OPLocationCondition.h"
-#import "OPOperationConditionMutuallyExclusive.h"
-#import "OPOperationConditionUserNotification.h"
-#import "OPPhotosCondition.h"
-#import "OPReachabilityCondition.h"
-#import "OPRemoteNotificationCondition.h"
-#import "OPSilentCondition.h"
-
-// Observers
-#import "OPBlockObserver.h"
-#import "OPBackgroundObserver.h"
-#import "OPNetworkObserver.h"
-#import "OPTimeoutObserver.h"
-
-#endif
+@end
