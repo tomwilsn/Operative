@@ -43,6 +43,7 @@
 #import "OPReachabilityCondition.h"
 #import "OPRemoteNotificationCondition.h"
 #import "OPSilentCondition.h"
+#import "OPNoCancelledDependenciesCondition.h"
 
 // Observers
 #import "OPBlockObserver.h"
