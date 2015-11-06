@@ -1,5 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
-use_frameworks!
+
+# Cannot use frameworks until min deployment set to 8.0
+# use_frameworks!
 
 target 'Operative_Example', :exclusive => true do
   pod "Operative", :path => "../"
@@ -7,7 +9,4 @@ end
 
 target 'Operative_Tests', :exclusive => true do
   pod "Operative", :path => "../"
-
-  pod 'Specta'
-  pod 'Expecta'
 end

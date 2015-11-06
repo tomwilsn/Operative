@@ -19,148 +19,166 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// https://github.com/Specta/Specta
+#import <XCTest/XCTest.h>
 
 #import <Operative/NSError+Operative.h>
 #import <Operative/NSMutableDictionary+Operative.h>
 #import <Operative/NSOperation+Operative.h>
 #import <Operative/UIUserNotificationSettings+Operative.h>
 
-SpecBegin(CategoriesTests)
+@interface CategoriesTests : XCTestCase
 
-describe(@"NSError", ^{
+@end
+
+@implementation CategoriesTests
+
+- (void)setUp {
+    [super setUp];
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+}
+
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [super tearDown];
+}
+
+#pragma mark - NSError category
+#pragma mark -
+
+- (void)testCreateErrorWithCodeAndUserInfo {
+    NSDictionary *userInfo = @{@"test": @(YES)};
+    NSError *error = [NSError errorWithCode:1 userInfo:userInfo];
     
-    it(@"can create error with code and user info", ^{
-        NSDictionary *userInfo = @{@"test": @(YES)};
-        NSError *error = [NSError errorWithCode:1 userInfo:userInfo];
+    XCTAssertEqual(error.code, 1);
+    XCTAssertEqualObjects(error.userInfo, userInfo);
+    XCTAssertEqualObjects(error.domain, kOPOperationErrorDomain);
+}
 
-        expect(error.code).equal(1);
-        expect(error.userInfo).beIdenticalTo(userInfo);
-        expect(error.domain).equal(kOPOperationErrorDomain);
-    });
+- (void)testCreateErrorWithCode {
+    NSError *error = [NSError errorWithCode:1];
     
-    it(@"can create error with just a code", ^{
-        NSError *error = [NSError errorWithCode:1];
-        expect(error.code).equal(1);
-        expect(error.userInfo).to.beEmpty();
-        expect(error.domain).equal(kOPOperationErrorDomain);
-    });
-});
+    XCTAssertEqual(error.code, 1);
+    XCTAssertEqualObjects(error.userInfo, @{});
+    XCTAssertEqualObjects(error.domain, kOPOperationErrorDomain);
+}
 
-describe(@"NSMutableDictionary", ^{
-    it(@"can create a dictionary from a NSSet", ^{
-        NSSet *set = [NSSet setWithObjects:@{@"key": @"1", @"value": @"1"}, @{@"key": @"2", @"value": @"2"}, nil];
-        
-        NSMutableDictionary *dict = [NSMutableDictionary sequence:set keyMapper:^(id obj) {
-            return obj[@"key"];
-        }];
-        
-        expect(dict).to.haveCountOf(2);
-        expect(dict[@"1"]).to.haveCountOf(2);
-        expect(dict[@"2"]).to.haveCountOf(2);
-        
-        expect(dict[@"1"][@"key"]).equal(@"1");
-        expect(dict[@"1"][@"value"]).equal(@"1");
-        
-        expect(dict[@"2"][@"key"]).equal(@"2");
-        expect(dict[@"2"][@"value"]).equal(@"2");
-    });
-    it(@"can create a dictionary from a NSArray", ^{
-        NSArray *array = @[@{@"key": @"1", @"value": @"1"}, @{@"key": @"2", @"value": @"2"}];
-        
-        NSMutableDictionary *dict = [NSMutableDictionary sequence:array keyMapper:^(id obj) {
-            return obj[@"key"];
-        }];
-        
-        expect(dict).to.haveCountOf(2);
-        expect(dict[@"1"]).to.haveCountOf(2);
-        expect(dict[@"2"]).to.haveCountOf(2);
-        
-        expect(dict[@"1"][@"key"]).equal(@"1");
-        expect(dict[@"1"][@"value"]).equal(@"1");
-        
-        expect(dict[@"2"][@"key"]).equal(@"2");
-        expect(dict[@"2"][@"value"]).equal(@"2");
-    });
-});
+#pragma mark - NSMutableDictionary category
+#pragma mark -
 
-describe(@"NSOperation", ^{
-    it(@"can add multiple dependencies", ^{
-        NSOperation *operation = [[NSOperation alloc] init];
-        
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (int i = 0; i < 10; i++)
-        {
-            [array addObject:[[NSOperation alloc] init]];
-        }
-        
-        [operation addDependencies:array];
-        
-        expect(operation.dependencies).to.haveCountOf(10);
-    });
+- (void)testCreateDictionaryFromSet {
+    NSSet *set = [NSSet setWithObjects:@{@"key": @"1", @"value": @"1"}, @{@"key": @"2", @"value": @"2"}, nil];
     
-    it(@"can add completion block - test original", ^{
-        waitUntil(^(DoneCallback done) {
-            NSOperation *operation = [[NSOperation alloc] init];
-            operation.completionBlock = ^{
-                done();
-            };
-            
-            [operation addCompletionBlock:^(void) {
-            }];
-            
-            operation.completionBlock();
-        });
-
-    });
-    it(@"can add completion block - test added", ^{
-        waitUntil(^(DoneCallback done) {
-            NSOperation *operation = [[NSOperation alloc] init];
-            operation.completionBlock = ^{
-            };
-            
-            [operation addCompletionBlock:^(void) {
-                done();
-            }];
-            
-            operation.completionBlock();
-        });
-        
-    });
-});
-
-describe(@"UIUserNotificationSettings", ^{
-    it(@"can figure out if contains another set of settings - types", ^{
-        
-        UIUserNotificationSettings *settings1;
-        UIUserNotificationSettings *settings2;
-
-        // All
-        settings1 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
-        // All minus alert
-        settings2 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound) categories:nil];
-        expect([settings1 containsSettings:settings2]).to.beTruthy();
-        expect([settings2 containsSettings:settings1]).to.beFalsy();
-
-        // All
-        settings1 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
-        // All minus sound
-        settings2 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert) categories:nil];
-        expect([settings1 containsSettings:settings2]).to.beTruthy();
-        expect([settings2 containsSettings:settings1]).to.beFalsy();
-
-        // All
-        settings1 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
-        // All minus Badge
-        settings2 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
-        expect([settings1 containsSettings:settings2]).to.beTruthy();
-        expect([settings2 containsSettings:settings1]).to.beFalsy();
-    });
+    NSMutableDictionary *dict = [NSMutableDictionary sequence:set keyMapper:^(id obj) {
+        return obj[@"key"];
+    }];
     
-    it(@"can figure out if settings contains another set of settings - categories", ^{
-        // TODO
-    });
-});
+    XCTAssertEqual(dict.allKeys.count, 2);
+    XCTAssertEqual([[dict[@"1"] allKeys] count], 2);
+    XCTAssertEqual([[dict[@"2"] allKeys] count], 2);
+    
+    XCTAssertEqualObjects(dict[@"1"][@"key"], @"1");
+    XCTAssertEqualObjects(dict[@"1"][@"value"], @"1");
+    
+    XCTAssertEqualObjects(dict[@"2"][@"key"], @"2");
+    XCTAssertEqualObjects(dict[@"2"][@"value"], @"2");
+}
 
+- (void)testCreateDictionaryFromArray {
+    NSArray *array = @[@{@"key": @"1", @"value": @"1"}, @{@"key": @"2", @"value": @"2"}];
+    
+    NSMutableDictionary *dict = [NSMutableDictionary sequence:array keyMapper:^(id obj) {
+        return obj[@"key"];
+    }];
+    
+    XCTAssertEqual(dict.allKeys.count, 2);
+    XCTAssertEqual([[dict[@"1"] allKeys] count], 2);
+    XCTAssertEqual([[dict[@"2"] allKeys] count], 2);
+    
+    XCTAssertEqualObjects(dict[@"1"][@"key"], @"1");
+    XCTAssertEqualObjects(dict[@"1"][@"value"], @"1");
+    
+    XCTAssertEqualObjects(dict[@"2"][@"key"], @"2");
+    XCTAssertEqualObjects(dict[@"2"][@"value"], @"2");
+}
 
-SpecEnd
+#pragma mark - NSOperation category
+#pragma mark -
+
+- (void)testAddMultipleDependencies {
+    NSOperation *operation = [[NSOperation alloc] init];
+    
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < 10; i++)
+    {
+        [array addObject:[[NSOperation alloc] init]];
+    }
+    
+    [operation addDependencies:array];
+    
+    XCTAssertEqual(operation.dependencies.count, 10);
+}
+
+- (void)testAddOriginalCompletionBlock {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Should call original completion block"];
+    
+    NSOperation *operation = [[NSOperation alloc] init];
+    operation.completionBlock = ^{
+        [expectation fulfill];
+    };
+    
+    [operation addCompletionBlock:^(void) {
+    }];
+    
+    operation.completionBlock();
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
+- (void)testAddChainedCompletionBlock {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Should call chained completion block"];
+    
+    NSOperation *operation = [[NSOperation alloc] init];
+    operation.completionBlock = ^{
+        
+    };
+    
+    [operation addCompletionBlock:^(void) {
+        [expectation fulfill];
+    }];
+    
+    operation.completionBlock();
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
+#pragma mark - UIUserNotificationSettings category
+#pragma mark -
+
+- (void)testUserNotificationSettings {
+    UIUserNotificationSettings *settings1;
+    UIUserNotificationSettings *settings2;
+    
+    // All
+    settings1 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    // All minus alert
+    settings2 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound) categories:nil];
+    
+    XCTAssertTrue([settings1 containsSettings:settings2]);
+    XCTAssertFalse([settings2 containsSettings:settings1]);
+    
+    // All
+    settings1 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    // All minus sound
+    settings2 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert) categories:nil];
+    XCTAssertTrue([settings1 containsSettings:settings2]);
+    XCTAssertFalse([settings2 containsSettings:settings1]);
+    
+    // All
+    settings1 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    // All minus Badge
+    settings2 = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    XCTAssertTrue([settings1 containsSettings:settings2]);
+    XCTAssertFalse([settings2 containsSettings:settings1]);
+}
+
+@end
