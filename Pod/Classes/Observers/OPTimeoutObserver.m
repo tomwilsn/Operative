@@ -31,6 +31,12 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
 
 @property (assign, nonatomic) NSTimeInterval timeout;
 
+#if OS_OBJECT_USE_OBJC
+@property (strong, nonatomic) dispatch_source_t timer;
+#else
+@property (assign, nonatomic) dispatch_source_t timer;
+#endif
+
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 @end
@@ -43,10 +49,7 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
 
 - (void)operationDidStart:(OPOperation *)operation
 {
-    // When the operation starts, queue up a block to cause it to time out.
-    dispatch_time_t when = dispatch_time(DISPATCH_TIME_NOW, (int64_t)([self timeout] * NSEC_PER_SEC));
-
-    dispatch_after(when, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+    void(^timeoutHandler)() = ^{
         /**
          *  Cancel the operation if it hasn't finished and hasn't already
          *  been cancelled.
@@ -56,7 +59,21 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
             NSError *error = [NSError errorWithCode:OPOperationErrorCodeExecutionFailed userInfo:userInfo];
             [operation cancelWithError:error];
         }
-    });
+    };
+    
+    // When the operation starts, queue up a block to cause it to time out.
+    self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0));
+    
+    // Cancel operation immediately if timer wasn't created
+    if(!self.timer) {
+        timeoutHandler();
+        return;
+    }
+    
+    dispatch_source_set_timer(self.timer, dispatch_walltime(NULL, [self timeout] * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 1ull * NSEC_PER_SEC);
+    dispatch_source_set_event_handler(self.timer, timeoutHandler);
+    
+    dispatch_resume(self.timer);
 }
 
 - (void)operation:(OPOperation *)operation didProduceOperation:(NSOperation *)newOperation
@@ -66,7 +83,18 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
 
 - (void)operation:(OPOperation *)operation didFinishWithErrors:(NSArray *)errors
 {
-    // No-op
+    if(!self.timer) {
+        return;
+    }
+    
+    // Cancel and release the timer
+    dispatch_source_cancel(self.timer);
+    
+#if !OS_OBJECT_USE_OBJC
+    dispatch_release(self.timer);
+#endif
+    
+    self.timer = nil;
 }
 
 
