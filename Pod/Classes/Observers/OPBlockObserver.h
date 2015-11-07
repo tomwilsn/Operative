@@ -38,4 +38,6 @@
                       produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
                        finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
 
+- (instancetype)initWithFinishHandler:(void(^)(OPOperation *operation, NSArray *errors))finishHandler;
+
 @end

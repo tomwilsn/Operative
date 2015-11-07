@@ -67,4 +67,8 @@
     return self;
 }
 
+- (instancetype)initWithFinishHandler:(void(^)(OPOperation *operation, NSArray *errors))finishHandler {
+    return [self initWithStartHandler:nil produceHandler:nil finishHandler:finishHandler];
+}
+
 @end
