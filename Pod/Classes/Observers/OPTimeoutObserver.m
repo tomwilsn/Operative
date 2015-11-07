@@ -49,6 +49,7 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
 
 - (void)operationDidStart:(OPOperation *)operation
 {
+    // set up timeout handler
     void(^timeoutHandler)() = ^{
         /**
          *  Cancel the operation if it hasn't finished and hasn't already
@@ -70,9 +71,17 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
         return;
     }
     
-    dispatch_source_set_timer(self.timer, dispatch_walltime(NULL, [self timeout] * NSEC_PER_SEC), DISPATCH_TIME_FOREVER, 1ull * NSEC_PER_SEC);
-    dispatch_source_set_event_handler(self.timer, timeoutHandler);
+    // calculate time delta
+    int64_t delta = (int64_t)(self.timeout * NSEC_PER_SEC);
     
+    // calculate the leeway for timer using the same way as dispatch_after
+    int64_t leeway = delta / 10;
+    if(leeway < NSEC_PER_MSEC) leeway = NSEC_PER_MSEC;
+    if(leeway > 60 * NSEC_PER_SEC) leeway = 60 * NSEC_PER_SEC;
+    
+    dispatch_time_t when = dispatch_walltime(NULL, delta);
+    dispatch_source_set_event_handler(self.timer, timeoutHandler);
+    dispatch_source_set_timer(self.timer, when, DISPATCH_TIME_FOREVER, leeway);
     dispatch_resume(self.timer);
 }
 
