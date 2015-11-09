@@ -1,4 +1,4 @@
-// OPSilentCondition.m
+// OPNegatedCondition.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,11 +19,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "OPNegatedCondition.h"
+#import "NSError+Operative.h"
 
-#import "OPSilentCondition.h"
 
-
-@interface OPSilentCondition ()
+@interface OPNegatedCondition ()
 
 /**
  *  Underlying condition which is evaluated.
@@ -40,7 +40,7 @@
 @end
 
 
-@implementation OPSilentCondition
+@implementation OPNegatedCondition
 
 
 #pragma mark - Lifecycle
@@ -69,7 +69,7 @@
 
 - (NSString *)name
 {
-    return [NSString stringWithFormat:@"Silent<%@>", [self.condition name]];
+    return [NSString stringWithFormat:@"Not<%@>", [self.condition name]];
 }
 
 - (BOOL)isMutuallyExclusive
@@ -79,14 +79,38 @@
 
 - (NSOperation *)dependencyForOperation:(OPOperation *)operation
 {
-    return nil;
+    return [self.condition dependencyForOperation:operation];
 }
 
 - (void)evaluateConditionForOperation:(OPOperation *)operation
-                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
+                           completion:(void (^)(__unused OPOperationConditionResultStatus aResult, __unused NSError *anError))completion
 {
+    void (^underlyingCompletion)(OPOperationConditionResultStatus, NSError *) = ^(OPOperationConditionResultStatus result, __unused NSError *error) {
+        switch (result) {
+            case OPOperationConditionResultStatusSatisfied: {
+                // If the composed condition succeeded, then this one failed.
+                NSDictionary *userInfo = @{
+                    kOPOperationConditionKey : NSStringFromClass([self class]),
+                    kOPOperationNegatedConditionKey : NSStringFromClass([self.condition class])
+                };
+                NSError *negatedError = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:userInfo];
+                completion(OPOperationConditionResultStatusFailed, negatedError);
+            }
+                break;
+
+            case OPOperationConditionResultStatusFailed: {
+                // If the composed condition failed, then this one succeeded.
+                completion(OPOperationConditionResultStatusSatisfied, nil);
+            }
+                break;
+
+            default:
+                break;
+        }
+    };
+
     [self.condition evaluateConditionForOperation:operation
-                                       completion:completion];
+                                       completion:underlyingCompletion];
 }
 
 
