@@ -63,11 +63,6 @@
 #pragma mark - Lifecycle
 #pragma mark -
 
-- (instancetype)initWithDate:(NSDate *)date
-{
-    return [self initWithTimeInterval:[date timeIntervalSinceNow]];
-}
-
 - (instancetype)initWithTimeInterval:(NSTimeInterval)interval
 {
     self = [super init];
@@ -78,6 +73,11 @@
     _delay = interval;
 
     return self;
+}
+
+- (instancetype)initWithDate:(NSDate *)date
+{
+    return [self initWithTimeInterval:[date timeIntervalSinceNow]];
 }
 
 @end

@@ -37,4 +37,10 @@
 
 - (instancetype)initWithTask:(NSURLSessionTask *)task NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Unused `-init` method.
+ *  @see -initWithTask:
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 @end

@@ -25,6 +25,13 @@
 
 @interface OPGroupOperation() <OPOperationQueueDelegate>
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
+/**
+ *  Common initialized elements used in both `-init` & `-initWithOperations:`
+ */
+- (void)commonInit;
+
 @property (strong, nonatomic) OPOperationQueue *internalQueue;
 @property (strong, nonatomic) NSBlockOperation *finishingOperation;
 
@@ -106,32 +113,43 @@
     if (!self) {
         return nil;
     }
-
-    OPOperationQueue *queue = [[OPOperationQueue alloc] init];
-    [queue setSuspended:YES];
-    [queue setDelegate:self];
-
-    _internalQueue = queue;
     
-    _finishingOperation = [NSBlockOperation blockOperationWithBlock:^{}];
-    
-    _aggregatedErrors = [[NSMutableArray alloc] init];
+    [self commonInit];
     
     return self;
 }
 
 - (instancetype)initWithOperations:(NSArray *)operations
 {
-    self = [self init];
+    self = [super init];
     if (!self) {
         return nil;
     }
+    
+    [self commonInit];
     
     for (NSOperation *operation in operations) {
         [_internalQueue addOperation:operation];
     }
     
     return self;
+}
+
+
+#pragma mark - Private
+#pragma mark -
+
+- (void)commonInit
+{
+    OPOperationQueue *queue = [[OPOperationQueue alloc] init];
+    [queue setSuspended:YES];
+    [queue setDelegate:self];
+    
+    _internalQueue = queue;
+    
+    _finishingOperation = [NSBlockOperation blockOperationWithBlock:^{}];
+    
+    _aggregatedErrors = [[NSMutableArray alloc] init];
 }
 
 @end

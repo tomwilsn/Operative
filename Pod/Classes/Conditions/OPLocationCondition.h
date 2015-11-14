@@ -35,6 +35,17 @@ typedef NS_ENUM(NSUInteger, OPLocationConditionUsage) {
  */
 @interface OPLocationCondition : NSObject <OPOperationCondition>
 
-- (instancetype)initWithUsage:(OPLocationConditionUsage)usage;
+/**
+ *  Designated initializer, otherwise calling `-init` will return an
+ *  `OPLocationCondition` with a default usage of
+ *  `OPLocationConditionWhenInUse`.
+ *
+ *  @param usage A value defining the required location usage permission in
+ *               order to satisfy the condition.
+ *
+ *  @return An `OPLocationCondition` object with the required location usage
+ *          permission defined.
+ */
+- (instancetype)initWithUsage:(OPLocationConditionUsage)usage NS_DESIGNATED_INITIALIZER;
 
 @end

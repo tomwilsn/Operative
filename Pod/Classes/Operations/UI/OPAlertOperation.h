@@ -30,6 +30,12 @@
 
 - (instancetype)initWithPresentationContext:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Unused `-init` method.
+ *  @see -initWithPresentationContext:
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 @property (copy, nonatomic) NSString *title;
 
 @property (copy, nonatomic) NSString *message;

@@ -32,4 +32,10 @@
 
 - (instancetype)initWithHost:(NSURL *)host NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Unused `-init` method.
+ *  @see -initWithHost:
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 @end

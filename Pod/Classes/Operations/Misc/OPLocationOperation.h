@@ -38,4 +38,10 @@
 - (instancetype)initWithAccuracy:(CLLocationAccuracy)accuracy
                  locationHandler:(void (^)(CLLocation *location))locationHandler NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Unused `-init` method.
+ *  @see -initWithAccuracy:locationHandler:
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 @end
