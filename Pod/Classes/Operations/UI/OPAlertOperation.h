@@ -30,6 +30,9 @@
 
 - (instancetype)initWithPresentationContext:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)initWithPresentationContext:(UIViewController *)viewController
+                             preferredStyle:(UIAlertControllerStyle)preferredStyle;
+
 @property (copy, nonatomic) NSString *title;
 
 @property (copy, nonatomic) NSString *message;
