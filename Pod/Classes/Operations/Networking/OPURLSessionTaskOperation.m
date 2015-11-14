@@ -71,11 +71,11 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
                     [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
                 }
                 @catch (NSException *__unused exception) {}
-                
-                if (_task.error) {
-                    [self finishWithError:_task.error];
-                } else {
+
+                if ([self shouldSuppressErrors]) {
                     [self finish];
+                } else {
+                    [self finishWithError:[self.task error]];
                 }
             }
         }
@@ -98,6 +98,7 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
     NSAssert([task state] == NSURLSessionTaskStateSuspended, @"Tasks must be suspended.");
 
     _task = task;
+    _shouldSuppressErrors = NO;
 
     return self;
 }
