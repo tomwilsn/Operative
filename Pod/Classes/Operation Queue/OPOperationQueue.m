@@ -37,9 +37,7 @@
         __weak __typeof__(self) weakSelf = self;
         id <OPOperationObserver>observer = [[OPBlockObserver alloc] initWithStartHandler:nil
                                                                           produceHandler:^(__unused OPOperation *anOperation, NSOperation *newOperation) {
-                                                                              if (weakSelf) {
-                                                                                  [weakSelf addOperation:newOperation];
-                                                                              }
+                                                                              [weakSelf addOperation:newOperation];
                                                                           }
                                                                            finishHandler:^(OPOperation *anOperation, NSArray *errors) {
                                                                                __typeof__(self) strongSelf = weakSelf;
