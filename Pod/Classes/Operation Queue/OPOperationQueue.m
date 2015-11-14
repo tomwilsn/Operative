@@ -34,13 +34,17 @@
         OPOperation *opOperation = (OPOperation *)operation;
 
         // Set up a `OPBlockObserver` to invoke the `OPOperationQueueDelegate` method.
+        __weak __typeof__(self) weakSelf = self;
         id <OPOperationObserver>observer = [[OPBlockObserver alloc] initWithStartHandler:nil
                                                                           produceHandler:^(__unused OPOperation *anOperation, NSOperation *newOperation) {
-                                                                              [self addOperation:newOperation];
+                                                                              if (weakSelf) {
+                                                                                  [weakSelf addOperation:newOperation];
+                                                                              }
                                                                           }
                                                                            finishHandler:^(OPOperation *anOperation, NSArray *errors) {
-                                                                               if ([self delegate] && [self.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
-                                                                                   [self.delegate operationQueue:self operationDidFinish:anOperation withErrors:errors];
+                                                                               __typeof__(self) strongSelf = weakSelf;
+                                                                               if ([strongSelf delegate] && [strongSelf.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
+                                                                                   [strongSelf.delegate operationQueue:strongSelf operationDidFinish:anOperation withErrors:errors];
                                                                                }
                                                                            }];
 
@@ -108,7 +112,10 @@
         }];
     }
 
-    [self.delegate operationQueue:self willAddOperation:operation];
+    if ([self delegate] && [self.delegate respondsToSelector:@selector(operationQueue:willAddOperation:)]) {
+        [self.delegate operationQueue:self willAddOperation:operation];
+    }
+
     [super addOperation:operation];
 }
 
