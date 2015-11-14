@@ -117,22 +117,18 @@
 #pragma mark - Lifecycle
 #pragma mark -
 
-- (instancetype)initWithPresentationContext:(UIViewController *)viewController
+- (instancetype)initWithPresentationContext:(UIViewController *)presentationContext
 {
-    self = [super init];
-
+    self = [self initWithPresentationContext:presentationContext
+                              preferredStyle:UIAlertControllerStyleActionSheet];
     if (!self) {
         return nil;
     }
 
-    _alertController = [[UIAlertController alloc] init];
-
-    [self commonInitWithPresentationContext:viewController];
-
     return self;
 }
 
-- (instancetype)initWithPresentationContext:(UIViewController *)viewController
+- (instancetype)initWithPresentationContext:(UIViewController *)presentationContext
                              preferredStyle:(UIAlertControllerStyle)preferredStyle
 {
     self = [super init];
@@ -142,8 +138,17 @@
     }
 
     _alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:preferredStyle];
-
-    [self commonInitWithPresentationContext:viewController];
+    
+    _presentationContext = presentationContext ?: [[[UIApplication sharedApplication] keyWindow] rootViewController];
+    
+    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
+    
+    /**
+     *  This operation modifies the view controller hierarchy.
+     *  Doing this while other such operations are executing can lead to
+     *  inconsistencies in UIKit. So, let's make them mutally exclusive.
+     */
+    [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
 
     return self;
 }
@@ -156,20 +161,6 @@
     }
     
     return self;
-}
-
-- (void)commonInitWithPresentationContext:(UIViewController *)viewController
-{
-    _presentationContext = viewController ?: [[[UIApplication sharedApplication] keyWindow] rootViewController];
-
-    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
-
-    /**
-     *  This operation modifies the view controller hierarchy.
-     *  Doing this while other such operations are executing can lead to
-     *  inconsistencies in UIKit. So, let's make them mutally exclusive.
-     */
-    [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
 }
 
 @end

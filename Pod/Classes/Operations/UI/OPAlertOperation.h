@@ -28,10 +28,23 @@
 
 @interface OPAlertOperation : OPOperation
 
-- (instancetype)initWithPresentationContext:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
+/**
+ *  Initializes an instance of OPAlertOperation with the contained
+ *  UIAlertController's UIAlertControllerStyle defaulted to
+ *  UIAlertControllerStyleActionSheet
+ *
+ *  @see -initWithPresentationContext:preferredStyle
+ *
+ *  @param presentationContext UIViewController from which the UIAlertController
+ *                             will be present. If nil then this will default to
+ *                             the rootViewController of the sharedApplication.
+ *
+ *  @return An initialized OPAlertOperation
+ */
+- (instancetype)initWithPresentationContext:(UIViewController *)presentationContext;
 
-- (instancetype)initWithPresentationContext:(UIViewController *)viewController
-                             preferredStyle:(UIAlertControllerStyle)preferredStyle;
+- (instancetype)initWithPresentationContext:(UIViewController *)presentationContext
+                             preferredStyle:(UIAlertControllerStyle)preferredStyle NS_DESIGNATED_INITIALIZER;
 
 @property (copy, nonatomic) NSString *title;
 
