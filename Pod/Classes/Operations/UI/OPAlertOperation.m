@@ -115,7 +115,19 @@
 #pragma mark - Lifecycle
 #pragma mark -
 
-- (instancetype)initWithPresentationContext:(UIViewController *)viewController
+- (instancetype)initWithPresentationContext:(UIViewController *)presentationContext
+{
+    self = [self initWithPresentationContext:presentationContext
+                              preferredStyle:UIAlertControllerStyleActionSheet];
+    if (!self) {
+        return nil;
+    }
+
+    return self;
+}
+
+- (instancetype)initWithPresentationContext:(UIViewController *)presentationContext
+                             preferredStyle:(UIAlertControllerStyle)preferredStyle
 {
     self = [super init];
 
@@ -123,10 +135,10 @@
         return nil;
     }
 
-    _presentationContext = viewController ?: [[[UIApplication sharedApplication] keyWindow] rootViewController];
-
-    _alertController = [[UIAlertController alloc] init];
-
+    _alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:preferredStyle];
+    
+    _presentationContext = presentationContext ?: [[[UIApplication sharedApplication] keyWindow] rootViewController];
+    
     [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
     
     /**
