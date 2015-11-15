@@ -21,14 +21,6 @@
 
 #import "OPBlockObserver.h"
 
-
-@interface OPBlockObserver ()
-
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
-@end
-
-
 @implementation OPBlockObserver
 
 
@@ -76,14 +68,8 @@
     return self;
 }
 
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-
-    return self;
+- (instancetype)initWithFinishHandler:(void(^)(OPOperation *operation, NSArray *errors))finishHandler {
+    return [self initWithStartHandler:nil produceHandler:nil finishHandler:finishHandler];
 }
 
 @end
