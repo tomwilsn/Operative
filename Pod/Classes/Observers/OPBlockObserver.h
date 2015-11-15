@@ -40,6 +40,4 @@
 
 - (instancetype)initWithFinishHandler:(void(^)(OPOperation *operation, NSArray *errors))finishHandler;
 
-- (instancetype)init NS_UNAVAILABLE;
-
 @end
