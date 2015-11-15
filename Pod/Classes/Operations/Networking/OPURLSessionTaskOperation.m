@@ -9,7 +9,7 @@
 // furnished to do so, subject to the following conditions:
 //
 // The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+// all copies or substantial portions of oftware.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -70,10 +70,10 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
                 }
                 @catch (NSException *__unused exception) {}
                 
-                if (_task.error) {
-                    [self finishWithError:_task.error];
-                } else {
+                if ([self shouldSuppressErrors]) {
                     [self finish];
+                } else {
+                    [self finishWithError:[self.task error]];
                 }
             }
         }
@@ -96,6 +96,7 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
     NSAssert([task state] == NSURLSessionTaskStateSuspended, @"Tasks must be suspended.");
 
     _task = task;
+    _shouldSuppressErrors = NO;
 
     return self;
 }
