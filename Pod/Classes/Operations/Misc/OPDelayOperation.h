@@ -37,8 +37,15 @@
  */
 @interface OPDelayOperation : OPOperation
 
+- (instancetype)initWithTimeInterval:(NSTimeInterval)interval NS_DESIGNATED_INITIALIZER;
+
 - (instancetype)initWithDate:(NSDate *)date;
 
-- (instancetype)initWithTimeInterval:(NSTimeInterval)interval;
+/**
+ *  Unused `-init` method.
+ *  @see -initWithTimeInterval:
+ *  @see -initWithDate:
+ */
+- (instancetype)init NS_UNAVAILABLE;
 
 @end

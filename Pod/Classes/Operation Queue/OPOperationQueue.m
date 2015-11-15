@@ -32,19 +32,17 @@
 {
     if ([operation isKindOfClass:[OPOperation class]]) {
         OPOperation *opOperation = (OPOperation *)operation;
-        
-        __weak __typeof__(self) weakSelf = self;
-        
+
         // Set up a `OPBlockObserver` to invoke the `OPOperationQueueDelegate` method.
+        __weak __typeof__(self) weakSelf = self;
         id <OPOperationObserver>observer = [[OPBlockObserver alloc] initWithStartHandler:nil
-                                                                          produceHandler:^(__unused OPOperation *operation, NSOperation *newOperation) {
+                                                                          produceHandler:^(__unused OPOperation *anOperation, NSOperation *newOperation) {
                                                                               [weakSelf addOperation:newOperation];
                                                                           }
-                                                                           finishHandler:^(OPOperation *operation, NSArray *errors) {
-                                                                               __strong __typeof__(self) strongSelf = weakSelf;
-                                                                               
+                                                                           finishHandler:^(OPOperation *anOperation, NSArray *errors) {
+                                                                               __typeof__(self) strongSelf = weakSelf;
                                                                                if ([strongSelf delegate] && [strongSelf.delegate respondsToSelector:@selector(operationQueue:operationDidFinish:withErrors:)]) {
-                                                                                   [strongSelf.delegate operationQueue:strongSelf operationDidFinish:operation withErrors:errors];
+                                                                                   [strongSelf.delegate operationQueue:strongSelf operationDidFinish:anOperation withErrors:errors];
                                                                                }
                                                                            }];
 
@@ -80,8 +78,8 @@
 
             OPBlockObserver *blockObserver = [[OPBlockObserver alloc] initWithStartHandler:nil
                                                                             produceHandler:nil
-                                                                             finishHandler:^(OPOperation *operation, __unused NSArray *errors) {
-                                                                                 [exclusivityController removeOperation:operation categories:concurrencyCategories];
+                                                                             finishHandler:^(OPOperation *anOperation, __unused NSArray *errors) {
+                                                                                 [exclusivityController removeOperation:anOperation categories:concurrencyCategories];
                                                                              }];
             [opOperation addObserver:blockObserver];
         }
@@ -112,7 +110,10 @@
         }];
     }
 
-    [self.delegate operationQueue:self willAddOperation:operation];
+    if ([self delegate] && [self.delegate respondsToSelector:@selector(operationQueue:willAddOperation:)]) {
+        [self.delegate operationQueue:self willAddOperation:operation];
+    }
+
     [super addOperation:operation];
 }
 

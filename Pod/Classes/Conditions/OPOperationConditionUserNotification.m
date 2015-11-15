@@ -22,19 +22,18 @@
 #if TARGET_OS_IPHONE
 
 #import "OPOperationConditionUserNotification.h"
-
-#import "OPOperation.h"
-
-#import "UIUserNotificationSettings+Operative.h"
-#import "NSError+Operative.h"
-
 #import "OPOperationConditionMutuallyExclusive.h"
+
+#import "NSError+Operative.h"
+#import "UIUserNotificationSettings+Operative.h"
+
 
 NSString * const kCurrentSettings = @"CurrentUserNotificationSettings";
 NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
 
 
-#pragma mark - OPOperationConditionUserNotification Private 
+#pragma mark - OPOperationConditionUserNotification Private
+#pragma mark -
 
 @interface OPOperationConditionUserNotification()
 
@@ -44,7 +43,9 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
 
 @end
 
+
 #pragma mark - OPUserNotificationPermissionOperation
+#pragma mark -
 
 @interface OPUserNotificationPermissionOperation : OPOperation
 
@@ -54,53 +55,61 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
 
 @end
 
+
 @implementation OPUserNotificationPermissionOperation
 
-- (instancetype) initWithSettings:(UIUserNotificationSettings *) settings application:(UIApplication *) appliction behavior:(OPOperationConditionUserNotificationBehavior)behavior
+- (instancetype)initWithSettings:(UIUserNotificationSettings *)settings
+                     application:(UIApplication *)application
+                        behavior:(OPOperationConditionUserNotificationBehavior)behavior
 {
     self = [super init];
-    if (self)
-    {
-        _settings = settings;
-        _application = appliction;
-        _behavior = behavior;
-        
-        [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
+    if (!self) {
+        return nil;
     }
+
+    _settings = settings;
+    _application = application;
+    _behavior = behavior;
+
+    [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
+
     return self;
 }
 
-- (void) execute
+- (void)execute
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIUserNotificationSettings *currentSettings = self.application.currentUserNotificationSettings;
-        
+        UIUserNotificationSettings *currentSettings = [self.application currentUserNotificationSettings];
         UIUserNotificationSettings *settingsToRegister;
-        
-        switch (self.behavior)
-        {
+
+        switch ([self behavior]) {
             case OPOperationConditionBehaviorMerge:
-                settingsToRegister = [currentSettings settingsByMerging:self.settings];
+                settingsToRegister = [currentSettings settingsByMerging:[self settings]];
                 break;
             case OPOperationConditionBehaviorReplace:
             default:
-                settingsToRegister = self.settings;
+                settingsToRegister = [self settings];
                 break;
         }
-        
+
         [self.application registerUserNotificationSettings:settingsToRegister];
-        
+
         [self finish];
     });
 }
 
 @end
 
+
 #pragma mark - OPOperationConditionUserNotification Implementation
+#pragma mark -
 
 @implementation OPOperationConditionUserNotification
 
-- (instancetype) initWithSettings:(UIUserNotificationSettings *)settings application:(UIApplication *)application
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithSettings:(UIUserNotificationSettings *)settings application:(UIApplication *)application
 {
     return [self initWithSettings:settings application:application behavior:OPOperationConditionBehaviorMerge];
 }
@@ -108,18 +117,21 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
 - (instancetype) initWithSettings:(UIUserNotificationSettings *)settings application:(UIApplication *)application behavior:(OPOperationConditionUserNotificationBehavior)behavior
 {
     self = [super init];
-    if (self)
-    {
-        _settings = settings;
-        _application = application;
-        _behavior = behavior;
+    if (!self) {
+        return nil;
     }
+    _settings = settings;
+    _application = application;
+    _behavior = behavior;
+    
     return self;
 }
 
-#pragma mark - OPOperationCondition
 
-- (NSString *) name
+#pragma mark - OPOperationCondition
+#pragma mark -
+
+- (NSString *)name
 {
     return @"UserNotification";
 }
@@ -129,34 +141,35 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
     return NO;
 }
 
-- (NSOperation *) dependencyForOperation:(OPOperation *)operation
+- (NSOperation *)dependencyForOperation:(OPOperation *)operation
 {
-    return [[OPUserNotificationPermissionOperation alloc] initWithSettings:self.settings
-                                                               application:self.application
-                                                                  behavior:self.behavior];
+    return [[OPUserNotificationPermissionOperation alloc] initWithSettings:[self settings]
+                                                               application:[self application]
+                                                                  behavior:[self behavior]];
 }
 
-- (void) evaluateConditionForOperation:(OPOperation *)operation completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
+- (void)evaluateConditionForOperation:(OPOperation *)operation
+                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
 {
     // Satisfied until not
     OPOperationConditionResultStatus result = OPOperationConditionResultStatusSatisfied;
 
     NSError *error = nil;
 
-    UIUserNotificationSettings *current = self.application.currentUserNotificationSettings;
-    
-    if ([current containsSettings:self.settings]) {
+    UIUserNotificationSettings *current = [self.application currentUserNotificationSettings];
+
+    if ([current containsSettings:[self settings]]) {
         // No-op
     } else {
         NSDictionary *userInfo = @{
-                kOPOperationConditionKey : NSStringFromClass(self.class),
-                kCurrentSettings : current ?: [NSNull null],
-                kDesiredSettings : self.settings
+            kOPOperationConditionKey : NSStringFromClass([self class]),
+            kCurrentSettings         : current ? : [NSNull null],
+            kDesiredSettings         : [self settings]
         };
         error = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:userInfo];
         result = OPOperationConditionResultStatusFailed;
     }
-    
+
     completion(result, error);
 }
 
