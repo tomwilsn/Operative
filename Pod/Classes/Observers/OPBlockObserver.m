@@ -21,7 +21,6 @@
 
 #import "OPBlockObserver.h"
 
-
 @implementation OPBlockObserver
 
 
@@ -53,7 +52,9 @@
 #pragma mark - Lifecycle
 #pragma mark -
 
-- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+- (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
+                      produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
+                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
 {
     self = [super init];
     if (!self) {
@@ -65,6 +66,10 @@
     _finishHandler = [finishHandler copy];
 
     return self;
+}
+
+- (instancetype)initWithFinishHandler:(void(^)(OPOperation *operation, NSArray *errors))finishHandler {
+    return [self initWithStartHandler:nil produceHandler:nil finishHandler:finishHandler];
 }
 
 @end

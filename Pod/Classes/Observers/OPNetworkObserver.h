@@ -28,6 +28,4 @@
  */
 @interface OPNetworkObserver : NSObject <OPOperationObserver>
 
-
-
 @end

@@ -32,4 +32,10 @@
 
 - (instancetype)initWithTimeout:(NSTimeInterval)timeout NS_DESIGNATED_INITIALIZER;
 
+/**
+ *  Unused `-init` method.
+ *  @see -initWithTimeout:
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 @end

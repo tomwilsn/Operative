@@ -51,8 +51,6 @@ static NSString *const kOPOperationHostKey = @"OperationHost";
 
 @property (copy, nonatomic) NSURL *host;
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
 @end
 
 
@@ -107,16 +105,6 @@ static NSString *const kOPOperationHostKey = @"OperationHost";
     }
     
     _host = [host copy];
-    
-    return self;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
     
     return self;
 }

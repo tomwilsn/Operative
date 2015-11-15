@@ -62,4 +62,11 @@ typedef void (^OPOperationBlock)(void (^completion)(void));
  */
 - (instancetype)initWithMainQueueBlock:(void (^)(void))mainQueueBlock;
 
+/**
+ *  Unused `-init` method.
+ *  @see -initWithBlock:
+ *  @see -initWithMainQueueBlock:
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
 @end

@@ -36,10 +36,19 @@
 #import "OPDelayOperation.h"
 
 // Conditions
+#import "OPLocationCondition.h"
+#import "OPOperationConditionMutuallyExclusive.h"
 #import "OPOperationConditionUserNotification.h"
+#import "OPPhotosCondition.h"
+#import "OPReachabilityCondition.h"
+#import "OPRemoteNotificationCondition.h"
+#import "OPSilentCondition.h"
+#import "OPNoCancelledDependenciesCondition.h"
 
 // Observers
 #import "OPBlockObserver.h"
+#import "OPBackgroundObserver.h"
+#import "OPNetworkObserver.h"
 #import "OPTimeoutObserver.h"
 
 #endif

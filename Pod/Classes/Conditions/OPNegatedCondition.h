@@ -44,9 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithCondition:(id <OPOperationCondition>)condition NS_DESIGNATED_INITIALIZER;
 
 /**
- *  Unused `-init` method. Do not use, will throw an exception.
- *
- *  @return Nothing returned, throws an exception if used.
+ *  Unused `-init` method.
+ *  @see - initWithCondition:
  */
 - (instancetype)init NS_UNAVAILABLE;
 

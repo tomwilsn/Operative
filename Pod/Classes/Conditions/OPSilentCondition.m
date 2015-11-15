@@ -30,13 +30,6 @@
  */
 @property (strong, nonatomic, readonly) id <OPOperationCondition> condition;
 
-/**
- *  Unused `-init` method. Do not used, will throw an exception.
- *
- *  @return Nothing returned, throws an exception if used.
- */
-- (instancetype)init NS_DESIGNATED_INITIALIZER; // Silences compiler crankiness
-
 @end
 
 
@@ -53,14 +46,6 @@
     _condition = condition;
 
     return self;
-}
-
-- (instancetype)init
-{
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"%@ not implemented, use -initWithCondition: instead", NSStringFromSelector(_cmd)]
-                                 userInfo:@{ @"file": @(__FILE__), @"line": @(__LINE__) }];
-    return nil;
 }
 
 

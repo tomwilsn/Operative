@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36BA00E658229C477F35A1DB /* libPods-Operative_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 860340B98354D8E2F499AE43 /* libPods-Operative_Example.a */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -20,11 +21,10 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
+		845CD7377065AB3EBB316C04 /* libPods-Operative_Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CBA8D3AD33ADD11F9E3934FD /* libPods-Operative_Tests.a */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
-		9EE08E45A9C5F244EE653806 /* Pods_Operative_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AE9A76FC6806A24C8741338 /* Pods_Operative_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		E220B57D1B35730800D706E1 /* GroupOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E220B57C1B35730800D706E1 /* GroupOperationTest.m */; };
 		E220B5901B36BE9100D706E1 /* CategoriesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E220B58E1B36BE8E00D706E1 /* CategoriesTests.m */; };
-		EF79C3C0771C5B5E9CE3B749 /* Pods_Operative_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,12 +59,11 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
-		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		860340B98354D8E2F499AE43 /* libPods-Operative_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Operative_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		904FB393F6D2C9F1CB51660B /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		9AE9A76FC6806A24C8741338 /* Pods_Operative_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Operative_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F2E06E562398CD873308840 /* Pods-Operative_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Tests/Pods-Operative_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Operative_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CBA8D3AD33ADD11F9E3934FD /* libPods-Operative_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Operative_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E220B57B1B35730800D706E1 /* GroupOperationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupOperationTest.h; sourceTree = "<group>"; };
 		E220B57C1B35730800D706E1 /* GroupOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupOperationTest.m; sourceTree = "<group>"; };
 		E220B58E1B36BE8E00D706E1 /* CategoriesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesTests.m; sourceTree = "<group>"; };
@@ -80,7 +79,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				EF79C3C0771C5B5E9CE3B749 /* Pods_Operative_Example.framework in Frameworks */,
+				36BA00E658229C477F35A1DB /* libPods-Operative_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,7 +90,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				9EE08E45A9C5F244EE653806 /* Pods_Operative_Tests.framework in Frameworks */,
+				845CD7377065AB3EBB316C04 /* libPods-Operative_Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,8 +125,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				E021978B7E10661511E5DBF7 /* Pods_Operative_Example.framework */,
-				9AE9A76FC6806A24C8741338 /* Pods_Operative_Tests.framework */,
+				860340B98354D8E2F499AE43 /* libPods-Operative_Example.a */,
+				CBA8D3AD33ADD11F9E3934FD /* libPods-Operative_Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -175,7 +174,6 @@
 			children = (
 				6003F5B7195388D20070C39A /* Tests-Info.plist */,
 				6003F5B8195388D20070C39A /* InfoPlist.strings */,
-				606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -254,11 +252,6 @@
 				CLASSPREFIX = OP;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Tom Wilson";
-				TargetAttributes = {
-					6003F5AD195388D20070C39A = {
-						TestTargetID = 6003F589195388D20070C39A;
-					};
-				};
 			};
 			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "Operative" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -555,14 +548,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9F2E06E562398CD873308840 /* Pods-Operative_Tests.debug.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -570,7 +560,6 @@
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Operative_Example.app/Operative_Example";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -579,18 +568,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3050B054C14E8A45839ECF46 /* Pods-Operative_Tests.release.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Operative_Example.app/Operative_Example";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
