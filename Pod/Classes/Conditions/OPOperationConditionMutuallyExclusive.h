@@ -37,7 +37,13 @@
  */
 + (OPOperationConditionMutuallyExclusive *)alertPresentationExclusivity;
 
-- (instancetype)initWithClass:(Class)cls;
+- (instancetype)initWithClass:(Class)cls NS_DESIGNATED_INITIALIZER;
+
+/**
+ *  Unused `-init` method.
+ *  @see -initWithClass:
+ */
+- (instancetype)init NS_UNAVAILABLE;
 
 @end
 

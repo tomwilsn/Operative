@@ -31,8 +31,6 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
 
 @property (assign, nonatomic) NSTimeInterval timeout;
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
 @end
 
 
@@ -82,16 +80,6 @@ static NSString *const kOPTimeoutObserverErrorKey = @"OPTimeoutObserverError";
 
     _timeout = timeout;
 
-    return self;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
     return self;
 }
 

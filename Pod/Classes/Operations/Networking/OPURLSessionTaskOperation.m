@@ -27,8 +27,6 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
 
 @interface OPURLSessionTaskOperation ()
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
 @property (strong, nonatomic) NSURLSessionTask *task;
 
 @end
@@ -99,16 +97,6 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
 
     _task = task;
 
-    return self;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
     return self;
 }
 

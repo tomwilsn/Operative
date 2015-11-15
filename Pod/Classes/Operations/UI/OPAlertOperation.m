@@ -27,8 +27,6 @@
 
 @interface OPAlertOperation ()
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
 @property (strong, nonatomic) UIAlertController *alertController;
 
 @property (strong, nonatomic) UIViewController *presentationContext;
@@ -138,16 +136,6 @@
      */
     [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIViewController class]]];
 
-    return self;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
     return self;
 }
 
