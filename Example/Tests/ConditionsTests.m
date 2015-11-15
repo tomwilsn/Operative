@@ -24,47 +24,6 @@
 #import <Operative/Operative.h>
 #import <Operative/OPOperationConditionMutuallyExclusive.h>
 
-// Operations used in tests
-@interface SimpleOperation: OPOperation @end
-@implementation SimpleOperation
-
-- (void)execute {
-    NSLog(@"Run %@", self);
-    
-    [self finish];
-}
-
-- (void)finishedWithErrors:(NSArray *)errors {
-    [super finishedWithErrors:errors];
-    
-    NSLog(@"Finished %@", self);
-}
-
-@end
-
-@interface SimpleProducerOperation: OPOperation @end
-@implementation SimpleProducerOperation
-
-- (void)execute {
-    NSLog(@"Run %@", self);
-    
-    SimpleOperation *op = [[SimpleOperation alloc] init];
-    
-    NSLog(@"Produce %@", op);
-    
-    [self produceOperation:op];
-    
-    [self finish];
-}
-
-- (void)finishedWithErrors:(NSArray *)errors {
-    [super finishedWithErrors:errors];
-    
-    NSLog(@"Finished %@", self);
-}
-
-@end
-
 @interface ConditionsTests : XCTestCase
 
 @end
@@ -130,32 +89,6 @@
     [operationQueue addOperations:operations waitUntilFinished:NO];
     
     [self waitForExpectationsWithTimeout:1 handler:nil];
-}
-
-- (void)testMutuallyExclusiveOperationsShouldNotDeadlockEachOther {
-    OPOperationQueue *operationQueue = [[OPOperationQueue alloc] init];
-    
-    NSMutableArray *operations = [[NSMutableArray alloc] init];
-    
-    // generate a batch of mutually exclusive operations, and ops that produce other mutually exclusive ops.
-    for(NSInteger i = 0; i < 4; i++) {
-        Class cls = (i % 2 == 0) ? [SimpleProducerOperation class] : [SimpleOperation class];
-        
-        OPOperation *operation = [[cls alloc] init];
-        
-        [operation addCondition:[[OPOperationConditionMutuallyExclusive alloc] initWithClass:[SimpleProducerOperation class]]];
-        [operation addCondition:[[OPOperationConditionMutuallyExclusive alloc] initWithClass:[SimpleOperation class]]];
-        
-        [operations addObject:operation];
-    }
-    
-    [operationQueue addOperations:operations waitUntilFinished:NO];
-    
-    // all operations should eventually be executed and removed from the queue
-    // this is how we know that operations do not block each others execution
-    [self keyValueObservingExpectationForObject:operationQueue keyPath:NSStringFromSelector(@selector(operationCount)) expectedValue:@0];
-    
-    [self waitForExpectationsWithTimeout:10 handler:nil];
 }
 
 @end
