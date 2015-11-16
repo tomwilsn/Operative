@@ -26,8 +26,6 @@
 
 @property (copy, nonatomic) OPOperationBlock block;
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
 @end
 
 @implementation OPBlockOperation
@@ -73,16 +71,6 @@
     };
     
     return [self initWithBlock:block];
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    
-    return self;
 }
 
 @end

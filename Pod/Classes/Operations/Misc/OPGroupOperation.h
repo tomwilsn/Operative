@@ -39,7 +39,16 @@
  */
 @interface OPGroupOperation : OPOperation
 
-- (instancetype)initWithOperations:(NSArray *)operations;
+/**
+ *  Initializes an `OPGroupOperation` object and adds the provided operations to
+ *  its internal queue
+ *
+ *  @param operations An `NSArray` of operations to be group together into a
+ *                    single executable operation.
+ *
+ *  @return An `OPGroupOperation` object
+ */
+- (instancetype)initWithOperations:(NSArray *)operations NS_DESIGNATED_INITIALIZER;
 
 /**
  *  Adds an operation to the group after instantiation

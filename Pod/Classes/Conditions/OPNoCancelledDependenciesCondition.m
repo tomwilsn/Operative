@@ -1,4 +1,4 @@
-// OPOperationConditionMutuallyExclusive.m
+// OPNoCancelledDependenciesCondition.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,75 +19,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "OPOperationConditionMutuallyExclusive.h"
+#import "OPNoCancelledDependenciesCondition.h"
+#import "NSError+Operative.h"
 
+NSString * const kOPCancelledDependenciesKey = @"CancelledDependencies";
 
-@interface OPOperationConditionMutuallyExclusive ()
+@implementation OPNoCancelledDependenciesCondition
 
-@property (copy, nonatomic) Class cls;
-
-@end
-
-@implementation OPOperationConditionMutuallyExclusive
-
-- (NSString *)debugDescription {
-    return [NSString stringWithFormat:@"%@ %@", [super debugDescription], [self name]];
+- (BOOL)isMutuallyExclusive {
+    return NO;
 }
 
-#pragma mark - OPOperationCondition Protocol
-#pragma mark -
-
-- (NSString *)name
-{
-    return [NSString stringWithFormat:@"MutuallyExclusive<%@>", NSStringFromClass(self.cls)];
+- (NSString *)name {
+    return @"NoCancelledDependencies";
 }
 
-- (BOOL)isMutuallyExclusive
-{
-    return YES;
-}
-
-- (NSOperation *)dependencyForOperation:(OPOperation *)operation
-{
+- (NSOperation *)dependencyForOperation:(OPOperation *)operation {
     return nil;
 }
 
 - (void)evaluateConditionForOperation:(OPOperation *)operation
                            completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
 {
-    completion(OPOperationConditionResultStatusSatisfied, nil);
-}
-
-
-#pragma mark - Lifecycle
-#pragma mark -
-
-+ (OPOperationConditionMutuallyExclusive *)alertPresentationExclusivity
-{
-    return [OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[OPAlertPresentation class]];
-}
-
-+ (OPOperationConditionMutuallyExclusive *)mutuallyExclusiveWith:(Class)cls
-{
-    return [[OPOperationConditionMutuallyExclusive alloc] initWithClass:cls];
-}
-
-- (instancetype)initWithClass:(Class)cls
-{
-    self = [super init];
-    if (!self) {
-        return nil;
+    // Verify that all of the dependencies executed.
+    NSArray *cancelled = [operation.dependencies filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"cancelled = YES"]];
+    
+    // Satisfied until not
+    OPOperationConditionResultStatus resultStatus = OPOperationConditionResultStatusSatisfied;
+    
+    NSError *error;
+    
+    if(cancelled.count != 0) {
+        // At least one dependency was cancelled; the condition was not satisfied.
+        NSDictionary *userInfo = @{
+            kOPOperationConditionKey: NSStringFromClass([self class]),
+            kOPCancelledDependenciesKey: cancelled
+        };
+        
+        error = [NSError errorWithCode:OPOperationErrorCodeConditionFailed userInfo:userInfo];
+        resultStatus = OPOperationConditionResultStatusFailed;
     }
-
-    _cls = [cls copy];
-
-    return self;
+    
+    completion(resultStatus, error);
 }
 
-@end
-
-
-#pragma mark - OPAlertPresentation
-
-@implementation OPAlertPresentation
 @end

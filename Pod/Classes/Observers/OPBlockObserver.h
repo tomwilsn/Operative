@@ -36,6 +36,8 @@
 
 - (instancetype)initWithStartHandler:(void (^)(OPOperation *operation))startHandler
                       produceHandler:(void (^)(OPOperation *operation, NSOperation *newOperation))produceHandler
-                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler;
+                       finishHandler:(void (^)(OPOperation *operation, NSArray *errors))finishHandler NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithFinishHandler:(void(^)(OPOperation *operation, NSArray *errors))finishHandler;
 
 @end

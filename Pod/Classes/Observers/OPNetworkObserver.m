@@ -29,11 +29,11 @@
 
 @property (assign, nonatomic, getter=isCancelled) BOOL cancelled;
 
-@property (copy, nonatomic) dispatch_block_t handler;
+@property (copy, nonatomic, readonly) dispatch_block_t handler;
 
 - (instancetype)initWithInterval:(NSTimeInterval)interval handler:(dispatch_block_t)handler NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
 
 - (void)cancel;
 
@@ -166,15 +166,24 @@
 
 @implementation OPTimer
 
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
+#pragma mark - Public
+#pragma mark -
 
-    return self;
+- (void)cancel
+{
+    [self setCancelled:YES];
 }
+
+- (void)fire
+{
+    if (![self isCancelled]) {
+        self.handler();
+    }
+}
+
+
+#pragma mark - Lifecycle
+#pragma mark -
 
 - (instancetype)initWithInterval:(NSTimeInterval)interval
                          handler:(dispatch_block_t)handler
@@ -195,18 +204,6 @@
     });
 
     return self;
-}
-
-- (void)cancel
-{
-    [self setCancelled:YES];
-}
-
-- (void)fire
-{
-    if (![self isCancelled]) {
-        self.handler();
-    }
 }
 
 @end
