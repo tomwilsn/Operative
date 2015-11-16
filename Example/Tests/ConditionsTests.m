@@ -66,7 +66,7 @@
             }
             
             XCTAssertEqual(followingOp.dependencies.count, 1, @"Mutually exclusive ops are chained. Each op should have one dependency.");
-            XCTAssertEqual(followingOp.dependencies.firstObject, precedingOp, @"Following operation should dependent on preceding operation.");
+            XCTAssertEqual(followingOp.dependencies.firstObject, precedingOp, @"Following operation should depend on preceding operation.");
             
             [reversedOperations removeObject:followingOp];
         }
