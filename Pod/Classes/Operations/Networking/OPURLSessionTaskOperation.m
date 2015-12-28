@@ -66,7 +66,7 @@ static void * OPURLSessionOperationKVOContext = &OPURLSessionOperationKVOContext
         if (object == [self task] && [keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
             if ([object state] == NSURLSessionTaskStateCompleted) {
                 @try {
-                    [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state))];
+                    [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:context];
                 }
                 @catch (NSException *__unused exception) {}
                 
