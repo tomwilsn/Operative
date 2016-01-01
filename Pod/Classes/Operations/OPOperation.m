@@ -126,11 +126,9 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 - (OPOperationState)state
 {
-    OPOperationState value;
     @synchronized(self) {
-        value = _state;
+        return _state;
     }
-    return value;
 }
 
 - (void)setState:(OPOperationState)newState
