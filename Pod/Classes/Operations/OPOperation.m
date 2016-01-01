@@ -287,6 +287,18 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     [self finishWithError:nil];
 }
 
+- (void)cancel {
+    [super cancel];
+    
+    if([self isFinished]) {
+        return;
+    }
+    
+    if(self.state > OPOperationStateReady) {
+        [self finish];
+    }
+}
+
 - (void)cancelWithError:(NSError *)error
 {
     if (error) {
