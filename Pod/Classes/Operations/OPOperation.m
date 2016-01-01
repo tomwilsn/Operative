@@ -133,17 +133,15 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 - (void)setState:(OPOperationState)newState
 {
-    // Guard against calling if state is currently finished
-    if (_state == OPOperationStateFinished) {
-        return;
-    }
-    
-    NSAssert(_state != newState, @"Performing invalid cyclic state transition.");
-    
     [self willChangeValueForKey:NSStringFromSelector(@selector(state))];
     
     @synchronized(self) {
-        _state = newState;
+        // Guard against calling if state is currently finished
+        if (_state != OPOperationStateFinished) {
+            NSAssert(_state != newState, @"Performing invalid cyclic state transition.");
+            
+            _state = newState;
+        }
     }
 
     [self didChangeValueForKey:NSStringFromSelector(@selector(state))];
