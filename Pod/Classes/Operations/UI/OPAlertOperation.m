@@ -52,7 +52,7 @@
             handler(strongSelf);
         }
         
-        [weakSelf finish];
+        [strongSelf finish];
     }];
     
     [self.alertController addAction:action];
