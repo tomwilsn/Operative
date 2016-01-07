@@ -58,6 +58,13 @@
 - (void)addOperation:(NSOperation *)operation;
 
 /**
+ *  Add multiple operations to the group after instantiation
+ *
+ *  @param operations Array of operations to add to the group
+ */
+- (void)addOperations:(NSArray *)operations;
+
+/**
  *  Note that some part of execution has produced an error.
  *  Errors aggregated through this method will be included in the final array
  *  of errors reported to observers and to the `-finished:` method.

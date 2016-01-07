@@ -51,6 +51,11 @@
     [self.internalQueue addOperation:operation];
 }
 
+- (void)addOperations:(NSArray *)operations
+{
+    [self.internalQueue addOperations:operations waitUntilFinished:NO];
+}
+
 - (void)aggregateError:(NSError *)error
 {
     [self.aggregatedErrors addObject:error];
