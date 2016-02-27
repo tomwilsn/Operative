@@ -52,7 +52,7 @@
             handler(strongSelf);
         }
         
-        [weakSelf finish];
+        [strongSelf finish];
     }];
     
     [self.alertController addAction:action];
@@ -70,6 +70,10 @@
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        if([self isCancelled]) {
+            return;
+        }
+        
         if ([self.alertController.actions count] == 0) {
             [self addAction:@"OK" style:UIAlertActionStyleDefault handler:nil];
         }
@@ -81,9 +85,16 @@
 - (void)cancel
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.alertController dismissViewControllerAnimated:YES completion:^{
+        if(self.alertController.presentingViewController)
+        {
+            [self.alertController dismissViewControllerAnimated:YES completion:^{
+                [super cancel];
+            }];
+        }
+        else
+        {
             [super cancel];
-        }];
+        }
     });
 }
 
