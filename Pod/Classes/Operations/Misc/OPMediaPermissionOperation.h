@@ -1,4 +1,4 @@
-// Operative.h
+// OPMediaPermissionOperation.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,39 +19,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef Pods_Operative_h
-#define Pods_Operative_h
-
-// Core
 #import "OPOperation.h"
-#import "OPOperationQueue.h"
-#import "OPOperationObserver.h"
 
-// Operations
-#import "OPBlockOperation.h"
-#import "OPAlertOperation.h"
-#import "OPURLSessionTaskOperation.h"
-#import "OPGroupOperation.h"
-#import "OPLocationOperation.h"
-#import "OPDelayOperation.h"
-#import "OPMediaPermissionOperation.h"
+/**
+ *  `OPMediaPermissionOperation` is an `OPOperation` subclass to request
+ *  permission to use the device's video or audio media type.
+ *
+ - returns: An instance of `OPMediaPermissionOperation`
+ */
+@interface OPMediaPermissionOperation : OPOperation
 
-// Conditions
-#import "OPLocationCondition.h"
-#import "OPOperationConditionMutuallyExclusive.h"
-#import "OPOperationConditionUserNotification.h"
-#import "OPPhotosCondition.h"
-#import "OPReachabilityCondition.h"
-#import "OPRemoteNotificationCondition.h"
-#import "OPSilentCondition.h"
-#import "OPNoCancelledDependenciesCondition.h"
-#import "OPVideoCondition.h"
-#import "OPAudioCondition.h"
+- (instancetype)initWithMediaType:(NSString *)mediaType NS_DESIGNATED_INITIALIZER;
 
-// Observers
-#import "OPBlockObserver.h"
-#import "OPBackgroundObserver.h"
-#import "OPNetworkObserver.h"
-#import "OPTimeoutObserver.h"
+- (instancetype)init NS_UNAVAILABLE;
 
-#endif
+@end
