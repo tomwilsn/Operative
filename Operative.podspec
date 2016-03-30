@@ -28,15 +28,17 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/Kabal/Operative.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/tomwilson'
 
-  s.platform     = :ios, '8.0'
+  s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.10'
   s.requires_arc = true
 
-  s.source_files = 'Pod/Classes/**/*'
-  s.resource_bundles = {
-    'Operative' => ['Pod/Assets/*.png']
-  }
+  s.source_files     = 'Pod/Classes/Operative.h'
+  s.ios.source_files = 'Pod/Classes/{Core,iOS}/**/*'
+  s.osx.source_files = 'Pod/Classes/{Core,OSX}/**/*'
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+
+  s.ios.frameworks = 'UIKit', 'AVFoundation'
+  
   # s.dependency 'AFNetworking', '~> 2.3'
 end

@@ -29,29 +29,39 @@
 
 // Operations
 #import "OPBlockOperation.h"
-#import "OPAlertOperation.h"
 #import "OPURLSessionTaskOperation.h"
 #import "OPGroupOperation.h"
-#import "OPLocationOperation.h"
 #import "OPDelayOperation.h"
+
+#if TARGET_OS_IPHONE
 #import "OPMediaPermissionOperation.h"
+#import "OPLocationOperation.h"
+#import "OPAlertOperation.h"
+#endif
 
 // Conditions
-#import "OPLocationCondition.h"
 #import "OPOperationConditionMutuallyExclusive.h"
+#import "OPReachabilityCondition.h"
+
+#if TARGET_OS_IPHONE
+#import "OPLocationCondition.h"
 #import "OPOperationConditionUserNotification.h"
 #import "OPPhotosCondition.h"
-#import "OPReachabilityCondition.h"
 #import "OPRemoteNotificationCondition.h"
-#import "OPSilentCondition.h"
-#import "OPNoCancelledDependenciesCondition.h"
 #import "OPVideoCondition.h"
 #import "OPAudioCondition.h"
+#endif
+
+#import "OPSilentCondition.h"
+#import "OPNoCancelledDependenciesCondition.h"
 
 // Observers
 #import "OPBlockObserver.h"
+#import "OPTimeoutObserver.h"
+
+#if TARGET_OS_IPHONE
 #import "OPBackgroundObserver.h"
 #import "OPNetworkObserver.h"
-#import "OPTimeoutObserver.h"
+#endif
 
 #endif
