@@ -58,7 +58,7 @@
 
 - (void)addAction:(NSString *)title
             style:(UIAlertActionStyle)style
-          handler:(void (^)(OPAlertOperation *))handler;
+          handler:(void (^)(OPAlertOperation *alertOperation))handler;
 
 @end
 
