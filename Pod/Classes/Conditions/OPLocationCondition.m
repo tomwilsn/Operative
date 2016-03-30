@@ -153,9 +153,7 @@ NSString *const kOPAuthorizationStatusKey = @"CLAuthorizationStatus";
 
     // This is an operation that potentially presents an alert so it should
     // be mutually exclusive with anything else that presents an alert.
-    OPOperationConditionMutuallyExclusive *condition;
-    Class cls = [UIAlertController class];
-    condition = [[OPOperationConditionMutuallyExclusive alloc] initWithClass:cls];
+    OPOperationConditionMutuallyExclusive *condition = [OPOperationConditionMutuallyExclusive alertPresentationExclusivity];
 
     [self addCondition:condition];
 
