@@ -71,7 +71,7 @@ NSString * const kDesiredSettings = @"DesiredUserNotificationSettings";
     _application = application;
     _behavior = behavior;
 
-    [self addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[UIAlertController class]]];
+    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
 
     return self;
 }

@@ -42,7 +42,7 @@
 
 - (void)addAction:(NSString *)title
             style:(UIAlertActionStyle)style
-          handler:(void (^)(OPAlertOperation *))handler;
+          handler:(void (^)(OPAlertOperation *alertOperation))handler;
 {
     __weak __typeof__(self) weakSelf = self;
     UIAlertAction *action = [UIAlertAction actionWithTitle:title style:style handler:^(UIAlertAction *action) {

@@ -1,4 +1,4 @@
-// Operative.h
+// OPMediaPermissionOperation.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,39 +19,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef Pods_Operative_h
-#define Pods_Operative_h
+@import AVFoundation;
 
-// Core
-#import "OPOperation.h"
-#import "OPOperationQueue.h"
-#import "OPOperationObserver.h"
-
-// Operations
-#import "OPBlockOperation.h"
-#import "OPAlertOperation.h"
-#import "OPURLSessionTaskOperation.h"
-#import "OPGroupOperation.h"
-#import "OPLocationOperation.h"
-#import "OPDelayOperation.h"
 #import "OPMediaPermissionOperation.h"
-
-// Conditions
-#import "OPLocationCondition.h"
 #import "OPOperationConditionMutuallyExclusive.h"
-#import "OPOperationConditionUserNotification.h"
-#import "OPPhotosCondition.h"
-#import "OPReachabilityCondition.h"
-#import "OPRemoteNotificationCondition.h"
-#import "OPSilentCondition.h"
-#import "OPNoCancelledDependenciesCondition.h"
-#import "OPVideoCondition.h"
-#import "OPAudioCondition.h"
 
-// Observers
-#import "OPBlockObserver.h"
-#import "OPBackgroundObserver.h"
-#import "OPNetworkObserver.h"
-#import "OPTimeoutObserver.h"
+@interface OPMediaPermissionOperation()
 
-#endif
+@property (copy, nonatomic) NSString *mediaType;
+
+@end
+
+@implementation OPMediaPermissionOperation
+
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithMediaType:(NSString *)mediaType
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    _mediaType = [mediaType copy];
+    
+    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
+    
+    return self;
+}
+
+#pragma mark - Overrides
+#pragma mark -
+
+- (void)execute
+{
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:[self mediaType]];
+    if (status == AVAuthorizationStatusNotDetermined) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [AVCaptureDevice requestAccessForMediaType:[self mediaType] completionHandler:^(BOOL granted) {
+                [self finish];
+            }];
+        });
+    } else {
+        [self finish];
+    }
+}
+
+@end
