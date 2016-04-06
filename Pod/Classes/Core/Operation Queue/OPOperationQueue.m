@@ -28,6 +28,34 @@
 
 @implementation OPOperationQueue
 
+#pragma mark - Debugging
+#pragma mark -
+
+- (NSString *)debugDescription
+{
+    NSMutableString *mutableString = [[NSMutableString alloc] init];
+    NSArray *operations = [[self operations] copy];
+    
+    NSString *description = [super debugDescription];
+    NSString *state = [self isSuspended] ? @"YES" : @"NO";
+    
+    NSString *result;
+    
+    for(NSOperation *op in operations)
+    {
+        NSArray *lines = [[op debugDescription] componentsSeparatedByString:@"\n"];
+        
+        for(NSString *str in lines)
+        {
+            [mutableString appendFormat:@"\t%@\n", str];
+        }
+    }
+    
+    result = [NSString stringWithFormat:@"%@ { isSuspended = %@ }\n%@", description, state, mutableString];
+    
+    return [result stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+}
+
 - (void)addOperation:(NSOperation *)operation
 {
     if ([operation isKindOfClass:[OPOperation class]]) {

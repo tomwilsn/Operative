@@ -95,6 +95,47 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 @implementation OPOperation
 @synthesize state = _state;
 
+#pragma mark - Debugging
+#pragma mark -
+
+- (NSString *)debugDescription
+{
+    NSString *description = [super debugDescription];
+    NSString *state;
+    
+    switch (self.state)
+    {
+        case OPOperationStateReady:
+            state = @"Ready";
+            break;
+            
+        case OPOperationStatePending:
+            state = @"Pending";
+            break;
+            
+        case OPOperationStateFinished:
+            state = @"Finished";
+            break;
+            
+        case OPOperationStateExecuting:
+            state = @"Executing";
+            break;
+            
+        case OPOperationStateFinishing:
+            state = @"Finishing";
+            break;
+            
+        case OPOperationStateInitialized:
+            state = @"Initialized";
+            break;
+            
+        case OPOperationStateEvaluatingConditions:
+            state = @"EvaluatingConditions";
+            break;
+    }
+    
+    return [NSString stringWithFormat:@"%@ (%@)", description, state];
+}
 
 #pragma mark - KVO
 #pragma mark -
