@@ -64,6 +64,11 @@
 
 - (void)addDependency:(NSOperation *)operation;
 
+/**
+ *  Returns condition evaluation operation used by OPOperationQueue.
+ */
+- (NSOperation *)conditionEvaluationOperation;
+
 
 ///---------------------------------
 /// @name Execution and Cancellation

@@ -75,19 +75,47 @@
                                                                            }];
 
         [opOperation addObserver:observer];
-
-        // Extract any dependencies needed by this operation
-        NSMutableArray *dependencies = [[NSMutableArray alloc] init];
-        for (id <OPOperationCondition>condition in [opOperation conditions]) {
-            NSOperation *dependency = [condition dependencyForOperation:opOperation];
-            if (dependency) {
-                [dependencies addObject:dependency];
+        
+        /*
+         Add conditions evaluation operation.
+         
+         Previously condition evaluation would happen on Operation level.
+         However due to bug discovered in NSOperation we cannot safely manipulate NSOperation.isReady.
+         
+         Therefore we have to wrap condition evalutor into operation and make it dependency for main operation.
+         Evaluation errors are then passed back to main operation before its execution.
+         
+         Relevant discussions:
+         
+         1. https://github.com/danthorpe/Operations/issues/175
+         2. https://github.com/Kabal/Operative/issues/51
+         
+         */
+        NSOperation *conditionEvaluationOperation = [opOperation conditionEvaluationOperation];
+        
+        // condition evaluator will be nil if there are no conditions set for operation
+        if(conditionEvaluationOperation)
+        {
+            // Extract any dependencies needed by this operation
+            NSMutableArray *dependencies = [[NSMutableArray alloc] init];
+            for (id <OPOperationCondition>condition in [opOperation conditions]) {
+                NSOperation *dependency = [condition dependencyForOperation:opOperation];
+                if (dependency) {
+                    [dependencies addObject:dependency];
+                }
             }
-        }
-
-        for (NSOperation *dependency in dependencies) {
-            [opOperation addDependency:dependency];
-            [self addOperation:dependency];
+            
+            // make sure operation waits for evaluator to finish
+            [opOperation addDependency:conditionEvaluationOperation];
+            
+            for (NSOperation *dependency in dependencies) {
+                // evaluator should wait for each condition's dependency
+                [conditionEvaluationOperation addDependency:dependency];
+                
+                [self addOperation:dependency];
+            }
+        
+            [self addOperation:conditionEvaluationOperation];
         }
 
         // With condition dependencies added, we can now see if this needs
