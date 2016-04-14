@@ -63,7 +63,7 @@
     
     [self cycleMutuallyExclusiveOperations:1 operationQueue:queue expectation:expectation];
     
-    // time for cofee: give it 10 minutes
+    // time for coffee: give it 10 minutes
     [self waitForExpectationsWithTimeout:600 handler:nil];
 }
 
@@ -131,12 +131,12 @@
 #pragma mark -
 
 - (void)testLotsOfAsyncOperations {
-    XCTestExpectation *expectation = [self expectationWithDescription:@"Should finish 500,000 mutually exclusive operations."];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Should finish 500,000 asynchronous operations."];
     OPOperationQueue *queue = [[OPOperationQueue alloc] init];
     
     [self cycleOperationsWithHollowCondition:1 operationQueue:queue expectation:expectation];
     
-    // time for cofee: give it 10 minutes
+    // time for coffee: give it 10 minutes
     [self waitForExpectationsWithTimeout:600 handler:nil];
 }
 
