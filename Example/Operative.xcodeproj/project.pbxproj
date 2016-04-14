@@ -10,6 +10,7 @@
 		36BA00E658229C477F35A1DB /* libPods-Operative_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 860340B98354D8E2F499AE43 /* libPods-Operative_Example.a */; };
 		580043761CBEBA4B002AAA36 /* StressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 580043751CBEBA4B002AAA36 /* StressTests.m */; };
 		58898F091BEE0975001AC718 /* BlockObserversTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 58898F081BEE0975001AC718 /* BlockObserversTests.m */; };
+		58FC2F991CBF9A0300F4A169 /* EvaluationOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FC2F981CBF9A0300F4A169 /* EvaluationOperationTests.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -45,6 +46,7 @@
 		3050B054C14E8A45839ECF46 /* Pods-Operative_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Operative_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Operative_Tests/Pods-Operative_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		580043751CBEBA4B002AAA36 /* StressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StressTests.m; sourceTree = "<group>"; };
 		58898F081BEE0975001AC718 /* BlockObserversTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockObserversTests.m; sourceTree = "<group>"; };
+		58FC2F981CBF9A0300F4A169 /* EvaluationOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EvaluationOperationTests.m; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* Operative_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Operative_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -169,6 +171,7 @@
 				6003F5BB195388D20070C39A /* Tests.m */,
 				E220B58E1B36BE8E00D706E1 /* CategoriesTests.m */,
 				58898F081BEE0975001AC718 /* BlockObserversTests.m */,
+				58FC2F981CBF9A0300F4A169 /* EvaluationOperationTests.m */,
 				580043751CBEBA4B002AAA36 /* StressTests.m */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
 			);
@@ -410,6 +413,7 @@
 			files = (
 				6003F5BC195388D20070C39A /* Tests.m in Sources */,
 				58898F091BEE0975001AC718 /* BlockObserversTests.m in Sources */,
+				58FC2F991CBF9A0300F4A169 /* EvaluationOperationTests.m in Sources */,
 				E220B5901B36BE9100D706E1 /* CategoriesTests.m in Sources */,
 				580043761CBEBA4B002AAA36 /* StressTests.m in Sources */,
 			);

@@ -91,53 +91,37 @@
          2. https://github.com/Kabal/Operative/issues/51
          
          */
-        NSOperation *conditionEvaluationOperation = [opOperation conditionEvaluationOperation];
+        OPOperation *conditionEvaluationOperation = [opOperation conditionEvaluationOperation];
         
         // condition evaluator will be nil if there are no conditions set for operation
         if(conditionEvaluationOperation)
         {
-            // Extract any dependencies needed by this operation
-            NSMutableArray *dependencies = [[NSMutableArray alloc] init];
+            // With condition dependencies added, we can now see if this needs
+            // dependencies to enforce mutual exclusivity.
+            NSMutableArray *concurrencyCategories = [[NSMutableArray alloc] init];
             for (id <OPOperationCondition>condition in [opOperation conditions]) {
-                NSOperation *dependency = [condition dependencyForOperation:opOperation];
-                if (dependency) {
-                    [dependencies addObject:dependency];
+                if (condition.isMutuallyExclusive) {
+                    [concurrencyCategories addObject:condition.name];
                 }
+            }
+            
+            if ([concurrencyCategories count] > 0) {
+                // Set up the mutual exclusivity dependencies.
+                OPExclusivityController *exclusivityController = [OPExclusivityController sharedExclusivityController];
+                [exclusivityController addOperation:opOperation categories:concurrencyCategories];
+                
+                OPBlockObserver *blockObserver = [[OPBlockObserver alloc] initWithStartHandler:nil
+                                                                                produceHandler:nil
+                                                                                 finishHandler:^(OPOperation *anOperation, __unused NSArray *errors) {
+                                                                                     [exclusivityController removeOperation:anOperation categories:concurrencyCategories];
+                                                                                 }];
+                [opOperation addObserver:blockObserver];
             }
             
             // make sure operation waits for evaluator to finish
             [opOperation addDependency:conditionEvaluationOperation];
             
-            for (NSOperation *dependency in dependencies) {
-                // evaluator should wait for each condition's dependency
-                [conditionEvaluationOperation addDependency:dependency];
-                
-                [self addOperation:dependency];
-            }
-        
             [self addOperation:conditionEvaluationOperation];
-        }
-
-        // With condition dependencies added, we can now see if this needs
-        // dependencies to enforce mutual exclusivity.
-        NSMutableArray *concurrencyCategories = [[NSMutableArray alloc] init];
-        for (id <OPOperationCondition>condition in [opOperation conditions]) {
-            if (condition.isMutuallyExclusive) {
-                [concurrencyCategories addObject:condition.name];
-            }
-        }
-
-        if ([concurrencyCategories count] > 0) {
-            // Set up the mutual exclusivity dependencies.
-            OPExclusivityController *exclusivityController = [OPExclusivityController sharedExclusivityController];
-            [exclusivityController addOperation:opOperation categories:concurrencyCategories];
-
-            OPBlockObserver *blockObserver = [[OPBlockObserver alloc] initWithStartHandler:nil
-                                                                            produceHandler:nil
-                                                                             finishHandler:^(OPOperation *anOperation, __unused NSArray *errors) {
-                                                                                 [exclusivityController removeOperation:anOperation categories:concurrencyCategories];
-                                                                             }];
-            [opOperation addObserver:blockObserver];
         }
 
         /**

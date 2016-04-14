@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 
 #import "OPOperation.h"
+#import "OPGroupOperation.h"
 #import "OPBlockOperation.h"
 #import "OPOperationCondition.h"
 #import "OPOperationConditionEvaluator.h"
@@ -58,6 +59,7 @@
 
 @synthesize executing = _executing;
 @synthesize finished = _finished;
+@synthesize conditionEvaluationOperation = _conditionEvaluationOperation;
 
 #pragma mark - Debugging
 #pragma mark -
@@ -147,30 +149,47 @@
     [self.conditions addObject:condition];
 }
 
-- (NSOperation *)conditionEvaluationOperation
+- (OPOperation *)conditionEvaluationOperation
 {
-    NSAssert(!self.isExecuting && !self.isFinished, @"Cannot issue condition evaluation operation for already executing or finished operations.");
-    
-    __weak __typeof__(self) weakSelf = self;
-    
-    if(self.conditions.count == 0) {
-        return nil;
-    }
-    
-    OPBlockOperation *evaluationOperation = [[OPBlockOperation alloc] initWithBlock:^(void (^completion)(void)) {
-        __strong __typeof__(self) strongSelf = weakSelf;
+    @synchronized (self) {
+        NSAssert(!self.isExecuting && !self.isFinished, @"Cannot issue condition evaluation operation for already executing or finished operations.");
         
-        [OPOperationConditionEvaluator evaluateConditions:[strongSelf conditions] operation:strongSelf completion:^(NSArray *failures) {
-            [strongSelf.internalErrors addObjectsFromArray:failures];
+        __weak __typeof__(self) weakSelf = self;
+        
+        if(self.conditions.count == 0) {
+            return nil;
+        }
+        
+        if(!_conditionEvaluationOperation) {
+            OPBlockOperation *evaluationOperation = [[OPBlockOperation alloc] initWithBlock:^(void (^completion)(void)) {
+                __strong __typeof__(self) strongSelf = weakSelf;
+                
+                [OPOperationConditionEvaluator evaluateConditions:[strongSelf conditions] operation:strongSelf completion:^(NSArray *failures) {
+                    [strongSelf.internalErrors addObjectsFromArray:failures];
+                    
+                    completion();
+                }];
+            }];
             
-            completion();
-        }];
-    }];
-    
-    evaluationOperation.qualityOfService = self.qualityOfService;
-    evaluationOperation.name = [NSString stringWithFormat:@"Condition evaluator for %@", [self description]];
-    
-    return evaluationOperation;
+            evaluationOperation.qualityOfService = self.qualityOfService;
+            evaluationOperation.name = [NSString stringWithFormat:@"Condition evaluator for %@", [self description]];
+            
+            // Extract any dependencies needed by this operation
+            NSMutableArray *dependencies = [[NSMutableArray alloc] init];
+            for (id <OPOperationCondition> condition in [self conditions]) {
+                NSOperation *dependency = [condition dependencyForOperation:self];
+                if (dependency) {
+                    [dependencies addObject:dependency];
+                    
+                    [evaluationOperation addDependency:dependency];
+                }
+            }
+            
+            _conditionEvaluationOperation = [[OPGroupOperation alloc] initWithOperations:[dependencies arrayByAddingObject:evaluationOperation]];
+        }
+        
+        return _conditionEvaluationOperation;
+    }
 }
 
 

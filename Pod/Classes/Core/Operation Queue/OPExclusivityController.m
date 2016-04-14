@@ -69,6 +69,9 @@
     if ([operationsWithThisCategory count]) {
         OPOperation *op = [operationsWithThisCategory lastObject];
         [operation addDependency:op];
+        
+        // condition evaluator should wait for mutually exclusive operation too
+        [operation.conditionEvaluationOperation addDependency:op];
     }
 
     operationsWithThisCategory = [operationsWithThisCategory arrayByAddingObject:operation];
