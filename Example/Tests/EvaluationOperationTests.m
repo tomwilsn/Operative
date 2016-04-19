@@ -181,6 +181,44 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
 
 @end
 
+//
+// Condition with dependency that produces mutually exclusive operation
+//
+
+@interface OPEvaluationTestOperationProducingCondition : NSObject<OPOperationCondition>
+
+@end
+
+@implementation OPEvaluationTestOperationProducingCondition
+
+- (BOOL)isMutuallyExclusive {
+    return NO;
+}
+
+- (NSString *)name {
+    return NSStringFromClass([self class]);
+}
+
+- (NSOperation *)dependencyForOperation:(OPOperation *)operation {
+    return [[OPBlockOperation alloc] initWithMainQueueBlock:^{
+        OPBlockOperation *exclusiveOp = [[OPBlockOperation alloc] initWithMainQueueBlock:^{
+            NSLog(@"Run produced operation.");
+        }];
+        
+        [exclusiveOp addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[NSOperation class]]];
+        
+        [operation produceOperation:exclusiveOp];
+    }];
+}
+
+- (void)evaluateConditionForOperation:(OPOperation *)operation
+                           completion:(void (^)(OPOperationConditionResultStatus result, NSError *error))completion
+{
+    completion(OPOperationConditionResultStatusSatisfied, nil);
+}
+
+@end
+
 
 //
 // Evaluation Operation Tests
@@ -201,6 +239,15 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
+//
+// Make sure that operations execute in the right order:
+//
+// 1. Run dependencies
+// 2. Run evaluation
+// 3. Run operation
+//
+//
 
 - (void)testOperationEvaluationOrder
 {
@@ -244,6 +291,10 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
     
     [self waitForExpectationsWithTimeout:30 handler:nil];
 }
+
+//
+// Make sure that mutually exclusive operations run in sequence
+//
 
 - (void)testMutuallyExclusiveOperations {
     OPOperationQueue *queue = [[OPOperationQueue alloc] init];
@@ -290,6 +341,34 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
     [queue addOperations:operations waitUntilFinished:NO];
     
     [self waitForExpectationsWithTimeout:20 handler:nil];
+}
+
+//
+// Make sure that queue does not deadlock if conditions produce mutually exclusive
+// operations with the same categories as relevant operations
+//
+
+- (void)testProduceMutuallyExclusiveOperationFromConditionDependencyShouldNotDeadlock
+{
+    OPOperationQueue *queue = [[OPOperationQueue alloc] init];
+    
+    // queue should be drained
+    [self keyValueObservingExpectationForObject:queue keyPath:@"operationCount" expectedValue:@0];
+    
+    for(NSInteger i = 0; i < 10; i++) {
+        OPBlockOperation *operation = [[OPBlockOperation alloc] initWithMainQueueBlock:^{
+            NSLog(@"Run operation %@", @(i + 1));
+        }];
+        
+        operation.name = [NSString stringWithFormat:@"Operation %@", @(i + 1)];
+        
+        [operation addCondition:[[OPEvaluationTestOperationProducingCondition alloc] init]];
+        [operation addCondition:[OPOperationConditionMutuallyExclusive mutuallyExclusiveWith:[NSOperation class]]];
+        
+        [queue addOperation:operation];
+    }
+    
+    [self waitForExpectationsWithTimeout:10 handler:nil];
 }
 
 @end
