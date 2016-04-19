@@ -262,6 +262,11 @@
     // No-op
 }
 
+- (void)finishedEvaluationWithErrors:(NSArray *)errors
+{
+    [self.internalErrors addObjectsFromArray:errors ?: @[]];
+}
+
 - (void)waitUntilFinished
 {
     NSAssert(NO, @"I'm pretty sure you don't want to do this.");

@@ -125,4 +125,10 @@
  */
 - (void)finishedWithErrors:(NSArray *)errors;
 
+/**
+ *  Subclasses should not normally override this.
+ *  This method is called by evaluator when all conditions evaluation finished.
+ */
+- (void)finishedEvaluationWithErrors:(NSArray *)errors;
+
 @end

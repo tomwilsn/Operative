@@ -102,9 +102,7 @@
                 __strong OPOperation *strongOperation = weakOperation;
                 
                 [OPOperationConditionEvaluator evaluateConditions:[strongOperation conditions] operation:strongOperation completion:^(NSArray *failures) {
-                    if(failures.count) {
-                        [strongOperation finishWithErrors:failures];
-                    }
+                    [strongOperation finishedEvaluationWithErrors:failures];
                     
                     completion();
                 }];
