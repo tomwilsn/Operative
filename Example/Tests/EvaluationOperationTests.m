@@ -213,6 +213,8 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
                 completion();
             });
         }];
+        
+        targetOperation.name = [NSString stringWithFormat:@"Operation %@", @(i + 1)];
 
         // Create expectation
         XCTestExpectation *expectation = [self expectationWithDescription:@"Should run a sequence of: condition dependencies, condition evaluation, relevant operation."];
@@ -251,10 +253,13 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
     for(NSInteger i = 0; i < 10; i++)
     {
         OPBlockOperation *operation = [[OPBlockOperation alloc] initWithBlock:^(void (^completion)(void)) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+                NSLog(@"Run operation %@", @(i + 1));
                 completion();
             });
         }];
+        
+        operation.name = [NSString stringWithFormat:@"Operation %@", @(i + 1)];
         
         [operation addObserver:[[OPBlockObserver alloc] initWithFinishHandler:^(OPOperation *operation, NSArray *errors) {
             @synchronized(operations) {
@@ -267,8 +272,8 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
                     //
                     // Condition evaluation group for mutually exclusive operation should have dependency set to previous target operation
                     //
-                    XCTAssertFalse(nextOp.isReady, @"Next mutually exclusive operation should not be Ready.");
-                    XCTAssertFalse(nextOp.conditionEvaluationOperation.isReady, @"Next operation's condition should not be Ready.");
+                    XCTAssertFalse(nextOp.isReady, @"Next mutually exclusive operation should not be ready yet.");
+                    XCTAssertTrue([nextOp.dependencies containsObject:operation], @"Next operation should depend on previous exclusive operation. Next operation: %@, dependencies: %@. Previous operation: %@", nextOp, nextOp.dependencies, operation);
                 }
                 else
                 {
@@ -284,7 +289,7 @@ static NSString * NSStringFromOPEvaluationTestState(OPEvaluationTestState state)
     
     [queue addOperations:operations waitUntilFinished:NO];
     
-    [self waitForExpectationsWithTimeout:5 handler:nil];
+    [self waitForExpectationsWithTimeout:20 handler:nil];
 }
 
 @end

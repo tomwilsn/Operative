@@ -38,8 +38,10 @@
  *
  *  @param operation  OPOperation object which requires exclusivity
  *  @param categories Array of strings describing the name of the category of exclusivity
+ *
+ *  @return previous operations in categories.
  */
-- (void)addOperation:(OPOperation *)operation categories:(NSArray *)categories;
+- (NSSet *)addOperation:(OPOperation *)operation categories:(NSArray *)categories;
 
 /**
  *  Unregisters an operation from being mutually exclusive.

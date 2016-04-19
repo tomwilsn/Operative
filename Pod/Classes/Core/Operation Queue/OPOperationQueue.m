@@ -21,9 +21,11 @@
 
 #import "OPOperationQueue.h"
 #import "OPOperation.h"
+#import "OPBlockOperation.h"
 #import "OPBlockObserver.h"
 #import "OPExclusivityController.h"
 #import "OPOperationCondition.h"
+#import "OPOperationConditionEvaluator.h"
 
 
 @implementation OPOperationQueue
@@ -91,24 +93,66 @@
          2. https://github.com/Kabal/Operative/issues/51
          
          */
-        OPOperation *conditionEvaluationOperation = [opOperation conditionEvaluationOperation];
         
-        // condition evaluator will be nil if there are no conditions set for operation
-        if(conditionEvaluationOperation)
+        if(opOperation.conditions.count)
         {
+            __weak OPOperation *weakOperation = opOperation;
+            
+            OPBlockOperation *evaluationOperation = [[OPBlockOperation alloc] initWithBlock:^(void (^completion)(void)) {
+                __strong OPOperation *strongOperation = weakOperation;
+                
+                [OPOperationConditionEvaluator evaluateConditions:[strongOperation conditions] operation:strongOperation completion:^(NSArray *failures) {
+                    if(failures.count) {
+                        [strongOperation finishWithErrors:failures];
+                    }
+                    
+                    completion();
+                }];
+            }];
+            
+            evaluationOperation.qualityOfService = opOperation.qualityOfService;
+            evaluationOperation.name = [NSString stringWithFormat:@"Condition evaluator for %@", [opOperation description]];
+            
+            // Extract any dependencies needed by this operation
+            NSMutableArray *dependencies = [[NSMutableArray alloc] init];
+            for (id <OPOperationCondition> condition in [opOperation conditions]) {
+                NSOperation *dependency = [condition dependencyForOperation:opOperation];
+                if (dependency) {
+                    [dependencies addObject:dependency];
+                    
+                    [evaluationOperation addDependency:dependency];
+                }
+            }
+            
+            // add evaluator into dependencies
+            [dependencies addObject:evaluationOperation];
+            
+            // operation should depend on evaluator
+            [opOperation addDependency:evaluationOperation];
+            
             // With condition dependencies added, we can now see if this needs
             // dependencies to enforce mutual exclusivity.
             NSMutableArray *concurrencyCategories = [[NSMutableArray alloc] init];
-            for (id <OPOperationCondition>condition in [opOperation conditions]) {
+            for (id<OPOperationCondition> condition in [opOperation conditions]) {
                 if (condition.isMutuallyExclusive) {
                     [concurrencyCategories addObject:condition.name];
                 }
             }
             
-            if ([concurrencyCategories count] > 0) {
+            if ([concurrencyCategories count] > 0)
+            {
                 // Set up the mutual exclusivity dependencies.
                 OPExclusivityController *exclusivityController = [OPExclusivityController sharedExclusivityController];
-                [exclusivityController addOperation:opOperation categories:concurrencyCategories];
+                
+                NSSet *previousMutuallyExclusiveOperations = [exclusivityController addOperation:opOperation categories:concurrencyCategories];
+                
+                for(NSOperation *previousExclusiveOp in previousMutuallyExclusiveOperations) {
+                    for(NSOperation *dependency in dependencies) {
+                        [dependency addDependency:previousExclusiveOp];
+                    }
+                    
+                    [opOperation addDependency:previousExclusiveOp];
+                }
                 
                 OPBlockObserver *blockObserver = [[OPBlockObserver alloc] initWithStartHandler:nil
                                                                                 produceHandler:nil
@@ -118,10 +162,7 @@
                 [opOperation addObserver:blockObserver];
             }
             
-            // make sure operation waits for evaluator to finish
-            [opOperation addDependency:conditionEvaluationOperation];
-            
-            [self addOperation:conditionEvaluationOperation];
+            [self addOperations:dependencies waitUntilFinished:NO];
         }
 
         /**

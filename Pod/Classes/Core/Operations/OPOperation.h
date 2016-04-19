@@ -53,11 +53,6 @@
  */
 @property (strong, nonatomic, readonly) NSMutableArray *conditions;
 
-/**
- *  Returns condition evaluation operation used by OPOperationQueue.
- */
-@property (nonatomic, readonly) OPOperation *conditionEvaluationOperation;
-
 
 ///---------------------------------------------
 /// @name Conditions, Observers and Dependencies

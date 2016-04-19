@@ -39,13 +39,21 @@
 #pragma mark - Add & Remove Operations
 #pragma mark -
 
-- (void)addOperation:(OPOperation *)operation categories:(NSArray *)categories
+- (NSSet *)addOperation:(OPOperation *)operation categories:(NSArray *)categories
 {
+    NSMutableSet *previousOperations = [[NSMutableSet alloc] init];
+    
     dispatch_sync([self serialQueue], ^{
         for (NSString *category in categories) {
-            [self noqueue_addOperation:operation category:category];
+            OPOperation *previousOp = [self noqueue_addOperation:operation category:category];
+            
+            if(previousOp) {
+                [previousOperations addObject:previousOp];
+            }
         }
     });
+    
+    return previousOperations;
 }
 
 
@@ -62,21 +70,21 @@
 #pragma mark - Operation Management
 #pragma mark -
 
-- (void)noqueue_addOperation:(OPOperation *)operation category:(NSString *)category
+- (OPOperation *)noqueue_addOperation:(OPOperation *)operation category:(NSString *)category
 {
     NSArray *operationsWithThisCategory = self.operations[category] ?: @[];
+    OPOperation *previousOperation = operationsWithThisCategory.lastObject;
 
     if ([operationsWithThisCategory count]) {
         OPOperation *op = [operationsWithThisCategory lastObject];
         [operation addDependency:op];
-        
-        // condition evaluator should wait for mutually exclusive operation too
-        [operation.conditionEvaluationOperation addDependency:op];
     }
 
     operationsWithThisCategory = [operationsWithThisCategory arrayByAddingObject:operation];
 
     self.operations[category] = operationsWithThisCategory;
+    
+    return previousOperation;
 }
 
 - (void)noqueue_removeOperation:(OPOperation *)operation category:(NSString *)category
