@@ -204,8 +204,8 @@
 - (void)cancel {
     [super cancel];
     
-    if([self isFinished]) {
-        return;
+    if([self isExecuting] && ![self isFinished]) {
+        [self finish];
     }
 }
 
