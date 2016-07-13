@@ -95,6 +95,47 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 @implementation OPOperation
 @synthesize state = _state;
 
+#pragma mark - Debugging
+#pragma mark -
+
+- (NSString *)debugDescription
+{
+    NSString *description = [super debugDescription];
+    NSString *state;
+    
+    switch (self.state)
+    {
+        case OPOperationStateReady:
+            state = @"Ready";
+            break;
+            
+        case OPOperationStatePending:
+            state = @"Pending";
+            break;
+            
+        case OPOperationStateFinished:
+            state = @"Finished";
+            break;
+            
+        case OPOperationStateExecuting:
+            state = @"Executing";
+            break;
+            
+        case OPOperationStateFinishing:
+            state = @"Finishing";
+            break;
+            
+        case OPOperationStateInitialized:
+            state = @"Initialized";
+            break;
+            
+        case OPOperationStateEvaluatingConditions:
+            state = @"EvaluatingConditions";
+            break;
+    }
+    
+    return [NSString stringWithFormat:@"%@ (%@)", description, state];
+}
 
 #pragma mark - KVO
 #pragma mark -
@@ -126,29 +167,27 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
 
 - (OPOperationState)state
 {
-    OPOperationState value;
     @synchronized(self) {
-        value = _state;
+        return _state;
     }
-    return value;
+}
+
++ (BOOL)automaticallyNotifiesObserversOfState
+{
+    return NO;
 }
 
 - (void)setState:(OPOperationState)newState
 {
-    // Guard against calling if state is currently finished
-    if (_state == OPOperationStateFinished) {
-        return;
-    }
-    
-    NSAssert(_state != newState, @"Performing invalid cyclic state transition.");
-    
-    [self willChangeValueForKey:NSStringFromSelector(@selector(state))];
-    
     @synchronized(self) {
-        _state = newState;
+        // Guard against calling if state is currently finished
+        if (_state != OPOperationStateFinished) {
+            NSAssert(_state != newState, @"Performing invalid cyclic state transition.");
+            [self willChangeValueForKey:@"state"];
+            _state = newState;
+            [self didChangeValueForKey:@"state"];
+        }
     }
-
-    [self didChangeValueForKey:NSStringFromSelector(@selector(state))];
 }
 
 - (void)evaluateConditions
@@ -285,6 +324,18 @@ typedef NS_ENUM(NSUInteger, OPOperationState) {
     NSLog(@"%@ must override -execute.", NSStringFromClass([self class]));
 
     [self finishWithError:nil];
+}
+
+- (void)cancel {
+    [super cancel];
+    
+    if([self isFinished]) {
+        return;
+    }
+    
+    if(self.state > OPOperationStateReady) {
+        [self finish];
+    }
 }
 
 - (void)cancelWithError:(NSError *)error

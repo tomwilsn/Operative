@@ -171,6 +171,8 @@ static NSString *const kOPRemoteNotificationOperationErrorKey = @"RemoteNotifica
             @"Received a notification without a token and without an error."
         );
     }
+    
+    [self finish];
 }
 
 

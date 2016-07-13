@@ -1,4 +1,4 @@
-// Operative.h
+// OPAudioCondition.h
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,49 +19,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef Pods_Operative_h
-#define Pods_Operative_h
+#import "OPOperationCondition.h"
 
-// Core
-#import "OPOperation.h"
-#import "OPOperationQueue.h"
-#import "OPOperationObserver.h"
+/**
+ *  A condition for verifying microphone permission using AVMediaTypeAudio
+ */
+@interface OPAudioCondition : NSObject <OPOperationCondition>
 
-// Operations
-#import "OPBlockOperation.h"
-#import "OPURLSessionTaskOperation.h"
-#import "OPGroupOperation.h"
-#import "OPDelayOperation.h"
-
-#if TARGET_OS_IPHONE
-#import "OPMediaPermissionOperation.h"
-#import "OPLocationOperation.h"
-#import "OPAlertOperation.h"
-#endif
-
-// Conditions
-#import "OPOperationConditionMutuallyExclusive.h"
-#import "OPReachabilityCondition.h"
-
-#if TARGET_OS_IPHONE
-#import "OPLocationCondition.h"
-#import "OPOperationConditionUserNotification.h"
-#import "OPPhotosCondition.h"
-#import "OPRemoteNotificationCondition.h"
-#import "OPVideoCondition.h"
-#import "OPAudioCondition.h"
-#endif
-
-#import "OPSilentCondition.h"
-#import "OPNoCancelledDependenciesCondition.h"
-
-// Observers
-#import "OPBlockObserver.h"
-#import "OPTimeoutObserver.h"
-
-#if TARGET_OS_IPHONE
-#import "OPBackgroundObserver.h"
-#import "OPNetworkObserver.h"
-#endif
-
-#endif
+@end

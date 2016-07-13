@@ -1,4 +1,4 @@
-// Operative.h
+// OPMediaPermissionOperation.m
 // Copyright (c) 2015 Tom Wilson <tom@toms-stuff.net>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,49 +19,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef Pods_Operative_h
-#define Pods_Operative_h
+@import AVFoundation;
 
-// Core
-#import "OPOperation.h"
-#import "OPOperationQueue.h"
-#import "OPOperationObserver.h"
-
-// Operations
-#import "OPBlockOperation.h"
-#import "OPURLSessionTaskOperation.h"
-#import "OPGroupOperation.h"
-#import "OPDelayOperation.h"
-
-#if TARGET_OS_IPHONE
 #import "OPMediaPermissionOperation.h"
-#import "OPLocationOperation.h"
-#import "OPAlertOperation.h"
-#endif
-
-// Conditions
 #import "OPOperationConditionMutuallyExclusive.h"
-#import "OPReachabilityCondition.h"
 
-#if TARGET_OS_IPHONE
-#import "OPLocationCondition.h"
-#import "OPOperationConditionUserNotification.h"
-#import "OPPhotosCondition.h"
-#import "OPRemoteNotificationCondition.h"
-#import "OPVideoCondition.h"
-#import "OPAudioCondition.h"
-#endif
+@interface OPMediaPermissionOperation()
 
-#import "OPSilentCondition.h"
-#import "OPNoCancelledDependenciesCondition.h"
+@property (copy, nonatomic) NSString *mediaType;
 
-// Observers
-#import "OPBlockObserver.h"
-#import "OPTimeoutObserver.h"
+@end
 
-#if TARGET_OS_IPHONE
-#import "OPBackgroundObserver.h"
-#import "OPNetworkObserver.h"
-#endif
+@implementation OPMediaPermissionOperation
 
-#endif
+#pragma mark - Lifecycle
+#pragma mark -
+
+- (instancetype)initWithMediaType:(NSString *)mediaType
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    _mediaType = [mediaType copy];
+    
+    [self addCondition:[OPOperationConditionMutuallyExclusive alertPresentationExclusivity]];
+    
+    return self;
+}
+
+#pragma mark - Overrides
+#pragma mark -
+
+- (void)execute
+{
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:[self mediaType]];
+    if (status == AVAuthorizationStatusNotDetermined) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [AVCaptureDevice requestAccessForMediaType:[self mediaType] completionHandler:^(BOOL granted) {
+                [self finish];
+            }];
+        });
+    } else {
+        [self finish];
+    }
+}
+
+@end
